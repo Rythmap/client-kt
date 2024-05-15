@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">Rythmap</string>
+    <string name="email">Почта</string>
+    <string name="username_or_email">Никнейм или почта</string>
+    <string name="username">Никнейм</string>
+    <string name="password">Пароль</string>
+    <string name="recover_password">Восстановить пароль</string>
+    <string name="login">Войти</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="don_t_have_an_account">Нет аккаунта?</string>
+    <string name="already_have_an_account">Уже есть аккаунт?</string>
+    <string name="o"><![CDATA[\\(>o<)/]]></string>
+    <string name="map">Карта</string>
+    <string name="account">Аккаунт</string>
+    <string name="add_more_info">Добавьте больше информации</string>
+    <string name="about_you">о себе</string>
+    <string name="name">Имя</string>
+    <string name="surname">Фамилия</string>
+    <string name="tell_about_yourself">Расскажите о себе</string>
+    <string name="music_prefs">Муз. предпочтения</string>
+    <string name="other_prefs">Другие предпочтения</string>
+    <string name="done">Дальше</string>
+    <string name="skip">Пропустить</string>
+    <string name="in_order_for_application_to_work">Для того, чтобы приложение заработало</string>
+    <string name="please_link_at_least_one_music_service">Пожалуйста, привяжите хотя бы один музыкальный сервис</string>
+    <string name="yandex_music_linked">Яндекс Музыка привязана успешно!</string>
+    <string name="yandex_music_link_cancelled">Привязка Яндекс Музыки отменена</string>
+    <string name="not_implemented_yet">Пока не реализовано</string>
+    <string name="add">Добавить</string>
+    <string name="message">Сообщение</string>
+    <string name="edit">Редактировать</string>
+    <string name="tap_for_more_info">Нажмите для подробностей</string>
+
+    <string-array name="music_preferences">
+        <item>Рэп</item>
+        <item>Поп</item>
+        <item>Рок</item>
+        <item>Хип-хоп</item>
+        <item>Кантри</item>
+        <item>Электроника</item>
+        <item>Джаз</item>
+        <item>Классика</item>
+        <item>Металл</item>
+        <item>Панк</item>
+        <item>Фонк</item>
+    </string-array>
+
+    <string-array name="other_preferences">
+        <item>Книги</item>
+        <item>Фильмы</item>
+        <item>Сериалы</item>
+        <item>Подкасты</item>
+        <item>Игры</item>
+        <item>Еда</item>
+        <item>Путешествия</item>
+        <item>Искусство</item>
+        <item>Наука</item>
+        <item>Технологии</item>
+        <item>Здоровье</item>
+        <item>Музыка</item>
+    </string-array>
+</resources>

@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">Rythmap</string>
+    <string name="email">Email</string>
+    <string name="username_or_email">Username or email</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="recover_password">Recover password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="o"><![CDATA[\\(>o<)/]]></string>
+    <string name="map">Map</string>
+    <string name="account">Account</string>
+    <string name="add_more_info">Add more info</string>
+    <string name="about_you">about you</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="tell_about_yourself">Tell about yourself</string>
+    <string name="music_prefs">Music prefs</string>
+    <string name="other_prefs">Other prefs</string>
+    <string name="done">Done</string>
+    <string name="skip">Skip</string>
+    <string name="in_order_for_application_to_work">In order for application to work</string>
+    <string name="please_link_at_least_one_music_service">Please link at least one music service</string>
+    <string name="yandex_music_linked">Yandex Music linked successfully!</string>
+    <string name="yandex_music_link_cancelled">Yandex Music link cancelled</string>
+    <string name="not_implemented_yet">Not implemented yet</string>
+    <string name="add">Add</string>
+    <string name="message">Message</string>
+    <string name="edit">Edit</string>
+    <string name="tap_for_more_info">Tap for more info</string>
+
+    <string-array name="music_preferences">
+        <item>Rap</item>
+        <item>Pop</item>
+        <item>Rock</item>
+        <item>Hip-Hop</item>
+        <item>Country</item>
+        <item>Electronic</item>
+        <item>Jazz</item>
+        <item>Classical</item>
+        <item>Metal</item>
+        <item>Punk</item>
+        <item>Phonk</item>
+    </string-array>
+
+    <string-array name="other_preferences">
+        <item>Books</item>
+        <item>Movies</item>
+        <item>TV Shows</item>
+        <item>Podcasts</item>
+        <item>Games</item>
+        <item>Food</item>
+        <item>Travel</item>
+        <item>Art</item>
+        <item>Science</item>
+        <item>Technology</item>
+        <item>Health</item>
+        <item>Music</item>
+    </string-array>
+</resources>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddMoreInfoActivity">
+
+
+    <TextView
+        android:id="@+id/addMoreInfoLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/add_more_info"
+        android:textSize="32sp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/aboutYouLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/about_you"
+        android:textSize="16sp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@+id/addMoreInfoLabel"
+        app:layout_constraintStart_toStartOf="@+id/addMoreInfoLabel"
+        app:layout_constraintTop_toBottomOf="@+id/addMoreInfoLabel" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profileBanner"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="25dp"
+        android:scaleType="centerCrop"
+        android:src="?attr/colorSecondaryContainer"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePfp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profilePfp"
+        app:shapeAppearanceOverlay="@style/roundedImageView"
+        app:strokeColor="?attr/colorSecondary"
+        app:strokeWidth="8dp"
+        android:padding="4dp"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profilePfp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="25dp"
+        android:padding="4dp"
+        android:background="?attr/colorSurface"
+        android:src="@drawable/photo_camera_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/aboutYouLabel"
+        app:shapeAppearanceOverlay="@style/roundedImageView"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="8dp"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:id="@+id/visibleNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileBanner">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameInputLayout"
+            style="?attr/textInputFilledStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="25dp"
+            android:paddingEnd="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                android:maxLength="20"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/surnameInputLayout"
+            style="?attr/textInputFilledStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingEnd="25dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/surnameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/surname"
+                android:maxLength="20"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/aboutInputLayout"
+        style="?attr/textInputFilledStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        app:counterMaxLength="150"
+        app:layout_constraintEnd_toEndOf="@+id/visibleNameLayout"
+        app:layout_constraintStart_toStartOf="@+id/visibleNameLayout"
+        app:layout_constraintTop_toBottomOf="@+id/visibleNameLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/aboutEditText"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:hint="@string/tell_about_yourself"
+            android:maxLength="150"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/preferencesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/aboutInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/aboutInputLayout"
+        app:layout_constraintEnd_toEndOf="@id/aboutInputLayout">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/musicPreferencesLayout"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="25dp"
+            android:paddingEnd="5dp">
+
+            <MultiAutoCompleteTextView
+                android:id="@+id/musicPreferencesDropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/music_prefs"
+                android:inputType="none"
+                android:dropDownWidth="match_parent"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/otherPreferencesLayout"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingEnd="25dp">
+
+            <MultiAutoCompleteTextView
+                android:id="@+id/otherPreferencesDropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/other_prefs"
+                android:inputType="none"
+                android:dropDownWidth="match_parent">
+
+            </MultiAutoCompleteTextView>
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/doneStageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="100dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/done"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/skipStageButton"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/skip"
+        android:textColor="?attr/colorSecondary"
+        app:layout_constraintEnd_toEndOf="@+id/doneStageButton"
+        app:layout_constraintStart_toStartOf="@+id/doneStageButton"
+        app:layout_constraintTop_toBottomOf="@+id/doneStageButton" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
