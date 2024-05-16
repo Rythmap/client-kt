@@ -9,11 +9,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.mvnh.rythmap.SecretData.TAG
 import com.mvnh.rythmap.databinding.FragmentAccountBinding
 import com.mvnh.rythmap.responses.ServiceGenerator
@@ -46,39 +46,36 @@ class AccountFragment : Fragment() {
         accountApi = ServiceGenerator.createService(AccountApi::class.java)
 
         retrieveAndShowAccountInfo(tokenManager.getToken())
-
-        val pickPfpLauncher =
-            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                if (uri != null) {
-                    uploadMedia(tokenManager.getToken(), "avatar", uri)
-                } else {
-                    Log.e(TAG, "Failed to pick media")
-                    Toast.makeText(requireContext(), "Failed to pick media", Toast.LENGTH_SHORT).show()
-                }
+        val editProfileSheetVM: EditProfileSheetVM by activityViewModels()
+        editProfileSheetVM.triggerAccountInfoRetrieval.observe(viewLifecycleOwner) { shouldRetrieve ->
+            if (shouldRetrieve) {
+                retrieveAndShowAccountInfo(tokenManager.getToken())
+                editProfileSheetVM.triggerAccountInfoRetrieval.value = false
             }
-        val pickBannerLauncher =
-            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                if (uri != null) {
-                    uploadMedia(tokenManager.getToken(), "banner", uri)
-                } else {
-                    Log.e(TAG, "Failed to pick media")
-                    Toast.makeText(requireContext(), "Failed to pick media", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-        binding.profilePfp.setOnClickListener {
-            pickPfpLauncher.launch(
-                PickVisualMediaRequest(
-                    ActivityResultContracts.PickVisualMedia.SingleMimeType("image/*")
-                )
-            )
         }
-        binding.profileBanner.setOnClickListener {
-            pickBannerLauncher.launch(
-                PickVisualMediaRequest(
-                    ActivityResultContracts.PickVisualMedia.SingleMimeType("image/*")
-                )
-            )
+
+        binding.editProfileButton.setOnClickListener {
+            val editProfileBottomSheet = EditProfileBottomSheet()
+
+            val bundle = Bundle()
+            bundle.putString("visibleName", binding.visibleNameTextView.text.toString())
+            bundle.putString("username", binding.usernameTextView.text.toString())
+            if (binding.descriptionTextView.visibility == View.VISIBLE) {
+                bundle.putString("description", binding.descriptionTextView.text.toString())
+            }
+            if (binding.profilePfp.drawable != null) {
+                val bitmapWidth = if (binding.profilePfp.width > 0) binding.profilePfp.width else 1
+                val bitmapHeight = if (binding.profilePfp.height > 0) binding.profilePfp.height else 1
+                bundle.putParcelable("avatar", binding.profilePfp.drawable.toBitmap(bitmapWidth, bitmapHeight))
+            }
+            if (binding.profileBanner.drawable != null) {
+                val bitmapWidth = if (binding.profileBanner.width > 0) binding.profileBanner.width else 1
+                val bitmapHeight = if (binding.profileBanner.height > 0) binding.profileBanner.height else 1
+                bundle.putParcelable("banner", binding.profileBanner.drawable.toBitmap(bitmapWidth, bitmapHeight))
+            }
+            editProfileBottomSheet.arguments = bundle
+
+            editProfileBottomSheet.show(parentFragmentManager, "editProfileBottomSheet")
         }
 
         return binding.root
@@ -121,20 +118,26 @@ class AccountFragment : Fragment() {
                     if (accountInfo?.accountId == accountIdSharedPref.getString("accountId", null)) {
                         binding.addToFriendsButton.visibility = View.GONE
                         binding.sendMessageButton.visibility = View.GONE
+
                         binding.editProfileButton.visibility = View.VISIBLE
+                    } else {
+                        binding.addToFriendsButton.visibility = View.VISIBLE
+                        binding.sendMessageButton.visibility = View.VISIBLE
+
+                        binding.editProfileButton.visibility = View.GONE
                     }
 
                     retrieveMedia(accountInfo?.nickname ?: "", "avatar")
                     retrieveMedia(accountInfo?.nickname ?: "", "banner")
                 } else {
                     Log.e(TAG, "Failed to retrieve account info: ${response.errorBody()?.string()}")
-                    Toast.makeText(requireContext(), "Failed to retrieve account info", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.failed_to_retrieve_account_info), Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<AccountInfoPrivate>, t: Throwable) {
                 Log.e(TAG, "Failed to retrieve account info", t)
-                Toast.makeText(requireContext(), "Failed to retrieve account info", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.failed_to_retrieve_account_info), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -171,7 +174,7 @@ class AccountFragment : Fragment() {
                         }
                     } catch (e: Exception) {
                         Log.e(TAG, "Failed to decode media", e)
-                        Toast.makeText(requireContext(), "Failed to decode media", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.failed_to_decode_media), Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Log.e(TAG, "Failed to retrieve media: ${response.errorBody()?.string()}")
@@ -223,14 +226,14 @@ class AccountFragment : Fragment() {
                 } else {
                     Log.e(TAG, "Failed to upload media: ${response.errorBody()?.string()}")
                     retrieveAndShowAccountInfo(token)
-                    Toast.makeText(requireContext(), "Failed to upload $type", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.failed_to_upload_media), Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Log.e(TAG, "Failed to upload ${type.uppercase()}", t)
                 retrieveAndShowAccountInfo(token)
-                Toast.makeText(requireContext(), "Failed to upload $type", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.failed_to_upload_media), Toast.LENGTH_SHORT).show()
             }
         })
     }

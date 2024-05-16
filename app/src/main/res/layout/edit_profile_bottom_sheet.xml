@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/Widget.Material3.BottomSheet"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <TextView
+        android:id="@+id/editInformationLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/edit_profile"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profileBanner"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="25dp"
+        android:padding="4dp"
+        android:scaleType="centerCrop"
+        android:src="?attr/colorSecondaryContainer"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePfp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profilePfp"
+        app:shapeAppearanceOverlay="@style/roundedImageView"
+        app:strokeColor="?attr/colorSecondary"
+        app:strokeWidth="8dp" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profilePfp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="25dp"
+        android:background="?attr/colorSurface"
+        android:padding="4dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/photo_camera_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editInformationLabel"
+        app:shapeAppearanceOverlay="@style/roundedImageView"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="8dp" />
+
+    <LinearLayout
+        android:id="@+id/visibleNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileBanner">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameInputLayout"
+            style="?attr/textInputFilledStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="25dp"
+            android:paddingEnd="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                android:maxLength="20"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/surnameInputLayout"
+            style="?attr/textInputFilledStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingEnd="25dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/surnameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/surname"
+                android:maxLength="20"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/aboutInputLayout"
+        style="?attr/textInputFilledStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        app:counterMaxLength="150"
+        app:layout_constraintEnd_toEndOf="@+id/visibleNameLayout"
+        app:layout_constraintStart_toStartOf="@+id/visibleNameLayout"
+        app:layout_constraintTop_toBottomOf="@+id/visibleNameLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/aboutEditText"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:hint="@string/tell_about_yourself"
+            android:maxLength="150"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/preferencesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="120dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@id/aboutInputLayout"
+        app:layout_constraintStart_toStartOf="@+id/aboutInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/aboutInputLayout">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/musicPreferencesLayout"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="25dp"
+            android:paddingEnd="5dp">
+
+            <MultiAutoCompleteTextView
+                android:id="@+id/musicPreferencesDropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="match_parent"
+                android:hint="@string/music_prefs"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/otherPreferencesLayout"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingEnd="25dp">
+
+            <MultiAutoCompleteTextView
+                android:id="@+id/otherPreferencesDropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="match_parent"
+                android:hint="@string/other_prefs"
+                android:inputType="none">
+
+            </MultiAutoCompleteTextView>
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/saveChangesButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:text="@string/save_changes"
+        android:textColor="?attr/colorPrimaryContainer"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textSize="16sp"
+        app:cornerRadius="16dp"
+        android:fontFamily="@font/inter_semibold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferencesLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

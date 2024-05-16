@@ -30,6 +30,14 @@
     <string name="message">Message</string>
     <string name="edit">Edit</string>
     <string name="tap_for_more_info">Tap for more info</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="failed_to_retrieve_account_info">Failed to retrieve account info</string>
+    <string name="failed_to_retrieve_media">Failed to retrieve media</string>
+    <string name="failed_to_upload_media">Failed to upload media</string>
+    <string name="failed_to_decode_media">Failed to decode media</string>
+    <string name="failed_to_pick_media">Failed to pick media</string>
+    <string name="save_changes">Save changes</string>
+
 
     <string-array name="music_preferences">
         <item>Rap</item>

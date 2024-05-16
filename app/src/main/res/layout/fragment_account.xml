@@ -17,10 +17,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/accountContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/accountContent"
-        android:background="?attr/colorOnSurfaceInverse">
+        android:background="?attr/colorOnSurfaceInverse"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-35dp">
 
         <ImageView
             android:id="@+id/profileBanner"
@@ -38,68 +40,63 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-25dp"
-            app:cardCornerRadius="25dp"
             app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="25dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profileBanner">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
+                android:id="@+id/accountInfoLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:id="@+id/accountInfoLayout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/visibleNameTextView"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="70dp"
+                    android:fontFamily="@font/inter_bold"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:text="Visible name"
+                    android:textSize="24dp" />
 
-                    <TextView
-                        android:id="@+id/visibleNameTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_bold"
-                        android:gravity="center"
-                        android:text="Visible name"
-                        android:textSize="24dp" />
+                <TextView
+                    android:id="@+id/usernameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_medium"
+                    android:gravity="center"
+                    android:text="username"
+                    android:textSize="16dp" />
 
-                    <TextView
-                        android:id="@+id/usernameTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_medium"
-                        android:gravity="center"
-                        android:text="username"
-                        android:textSize="16dp" />
+                <TextView
+                    android:id="@+id/descriptionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_regular"
+                    android:gravity="center"
+                    android:paddingStart="25dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="25dp"
+                    android:text="Description"
+                    android:textSize="16dp"
+                    android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/descriptionTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_regular"
-                        android:gravity="center"
-                        android:paddingTop="10dp"
-                        android:paddingStart="25dp"
-                        android:paddingEnd="25dp"
-                        android:text="Description"
-                        android:textSize="16dp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/tapForMoreLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="@string/tap_for_more_info"
-                        android:textColor="?attr/colorAccent"/>
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/tapForMoreLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="@string/tap_for_more_info"
+                    android:textColor="?attr/colorAccent" />
 
                 <LinearLayout
                     android:id="@+id/buttonsLayout"
@@ -128,7 +125,7 @@
                             android:fontFamily="@font/inter_medium"
                             android:gravity="center"
                             android:text="@string/add"
-                            android:textSize="14dp"
+                            android:textSize="16dp"
                             app:cornerRadius="16dp" />
 
                         <Button
@@ -142,7 +139,7 @@
                             android:gravity="center"
                             android:text="@string/message"
                             android:textColor="?attr/colorSecondary"
-                            android:textSize="14dp"
+                            android:textSize="16dp"
                             app:cornerRadius="16dp" />
 
                     </LinearLayout>
@@ -157,11 +154,12 @@
                         android:gravity="center"
                         android:text="@string/edit"
                         android:textColor="?attr/colorSurfaceInverse"
-                        android:textSize="14dp"
+                        android:textSize="16dp"
                         app:cornerRadius="16dp" />
 
                 </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -170,18 +168,19 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="-60dp"
-            android:padding="4dp"
-            android:src="@drawable/photo_camera_icon"
             android:background="?attr/colorOnSurfaceInverse"
-            app:layout_constraintTop_toTopOf="@+id/profileInfoCardView"
+            android:padding="4dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/photo_camera_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/profileInfoCardView"
+            app:layout_constraintTop_toTopOf="@+id/profileInfoCardView"
             app:shapeAppearanceOverlay="@style/roundedImageView"
             app:strokeColor="?attr/colorPrimary"
-            app:strokeWidth="8dp"
-            android:scaleType="centerCrop">
+            app:strokeWidth="8dp">
 
         </com.google.android.material.imageview.ShapeableImageView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

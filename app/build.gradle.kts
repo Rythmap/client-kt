@@ -60,6 +60,13 @@ dependencies {
     // Apache Commons IO
     implementation(libs.commons.io)
 
+    runtimeOnly(libs.androidx.activity.ktx)
+    runtimeOnly(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+
+    runtimeOnly(libs.androidx.lifecycle.viewmodel.ktx)
+    runtimeOnly(libs.androidx.lifecycle.livedata.ktx)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

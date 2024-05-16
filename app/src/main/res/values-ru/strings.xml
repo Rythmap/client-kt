@@ -30,6 +30,12 @@
     <string name="message">Сообщение</string>
     <string name="edit">Редактировать</string>
     <string name="tap_for_more_info">Нажмите для подробностей</string>
+    <string name="edit_profile">Редактировать профиль</string>
+    <string name="failed_to_retrieve_account_info">Не удалось получить информацию о профиле</string>
+    <string name="failed_to_retrieve_media">Не удалось получить изображение</string>
+    <string name="failed_to_upload_media">Не удалось загрузить изображение</string>
+    <string name="failed_to_decode_media">Не удалось декодировать изображение</string>
+    <string name="failed_to_pick_media">Ошибка при выборе изображения</string>
 
     <string-array name="music_preferences">
         <item>Рэп</item>
