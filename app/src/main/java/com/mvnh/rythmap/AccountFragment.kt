@@ -1,7 +1,6 @@
 package com.mvnh.rythmap
 
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.transition.Fade
 import android.transition.TransitionManager
@@ -9,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
@@ -19,11 +17,7 @@ import com.mvnh.rythmap.databinding.FragmentAccountBinding
 import com.mvnh.rythmap.responses.ServiceGenerator
 import com.mvnh.rythmap.responses.account.AccountApi
 import com.mvnh.rythmap.responses.account.entities.AccountInfoPrivate
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
-import org.apache.commons.io.IOUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,10 +41,10 @@ class AccountFragment : Fragment() {
 
         retrieveAndShowAccountInfo(tokenManager.getToken())
         val editProfileSheetVM: EditProfileSheetVM by activityViewModels()
-        editProfileSheetVM.triggerAccountInfoRetrieval.observe(viewLifecycleOwner) { shouldRetrieve ->
-            if (shouldRetrieve) {
+        editProfileSheetVM.accountInfoUpdated.observe(viewLifecycleOwner) { isUpdated ->
+            if (isUpdated) {
                 retrieveAndShowAccountInfo(tokenManager.getToken())
-                editProfileSheetVM.triggerAccountInfoRetrieval.value = false
+                editProfileSheetVM.accountInfoUpdated.value = false
             }
         }
 
@@ -95,12 +89,11 @@ class AccountFragment : Fragment() {
                     Log.d(TAG, "Account info: $accountInfo")
 
                     var visibleName = ""
-                    if (accountInfo?.visibleName != null) {
-                        if (accountInfo.visibleName.name != null) {
-                            visibleName = accountInfo.visibleName.name
-                        }
-                        if (accountInfo.visibleName.surname != null) {
-                            visibleName += " " + accountInfo.visibleName.surname
+                    if (!accountInfo?.visibleName?.name.isNullOrBlank()) {
+                        visibleName += accountInfo?.visibleName?.name
+
+                        if (!accountInfo?.visibleName?.surname.isNullOrBlank()) {
+                            visibleName += " ${accountInfo?.visibleName?.surname}"
                         }
                     }
                     if (visibleName.isBlank()) {
@@ -109,7 +102,7 @@ class AccountFragment : Fragment() {
                         binding.visibleNameTextView.text = visibleName
                     }
                     binding.usernameTextView.text = accountInfo?.nickname
-                    if (accountInfo?.about?.isNotBlank() == true && accountInfo.about != "null") {
+                    if (accountInfo?.about != null && accountInfo.about.isNotEmpty()) {
                         binding.descriptionTextView.text = accountInfo.about
                         binding.descriptionTextView.visibility = View.VISIBLE
                     }
@@ -205,35 +198,6 @@ class AccountFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                     binding.accountContent.visibility = View.VISIBLE
                 }
-            }
-        })
-    }
-
-    private fun uploadMedia(token: String?, type: String, uri: Uri) {
-        token ?: return
-
-        val uriInputStream = requireContext().contentResolver.openInputStream(uri)
-        val uriBytes = IOUtils.toByteArray(uriInputStream)
-        val requestBody = uriBytes.toRequestBody("image/jpeg".toMediaTypeOrNull(), 0, uriBytes.size)
-        val filePart = MultipartBody.Part.createFormData("file", "file", requestBody)
-
-        val call = accountApi.updateMedia(token, type, filePart)
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    Log.d(TAG, "${type.uppercase()} uploaded successfully")
-                    retrieveAndShowAccountInfo(token)
-                } else {
-                    Log.e(TAG, "Failed to upload media: ${response.errorBody()?.string()}")
-                    retrieveAndShowAccountInfo(token)
-                    Toast.makeText(requireContext(), getString(R.string.failed_to_upload_media), Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e(TAG, "Failed to upload ${type.uppercase()}", t)
-                retrieveAndShowAccountInfo(token)
-                Toast.makeText(requireContext(), getString(R.string.failed_to_upload_media), Toast.LENGTH_SHORT).show()
             }
         })
     }

@@ -37,6 +37,7 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
     private lateinit var binding: EditProfileBottomSheetBinding
     private lateinit var tokenManager: TokenManager
     private lateinit var accountApi: AccountApi
+    val editProfileSheetVM: EditProfileSheetVM by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,8 +48,6 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
 
         tokenManager = TokenManager(requireContext())
         accountApi = ServiceGenerator.createService(AccountApi::class.java)
-
-        val editProfileSheetVM: EditProfileSheetVM by activityViewModels()
 
         val musicPreferencesStringArray = resources.getStringArray(R.array.music_preferences)
         val musicPreferencesAdapter =
@@ -117,8 +116,7 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
                 binding.otherPreferencesDropdown.text.toString().split(", "),
                 binding.aboutEditText.text.toString()
             )
-            updateAccountInfo(accountUpdateInfo)
-            editProfileSheetVM.triggerAccountInfoRetrieval.value = true
+            editProfileSheetVM.updateAccountInfo(accountUpdateInfo)
         }
 
         return binding.root
@@ -162,33 +160,6 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
         }
 
         return dialog
-    }
-
-    private fun updateAccountInfo(accountUpdateInfo: AccountUpdateInfo) {
-        val call = accountApi.updateInfo(accountUpdateInfo)
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    Log.d(TAG, "Account info updated")
-                } else {
-                    Log.e(TAG, response.raw().toString())
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to update account info",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e(TAG, t.toString())
-                Toast.makeText(
-                    requireContext(),
-                    "Failed to update account info",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
     }
 
     private fun uploadMedia(token: String?, type: String, uri: Uri) {
