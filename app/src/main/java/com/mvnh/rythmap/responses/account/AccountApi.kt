@@ -38,6 +38,9 @@ interface AccountApi {
         @Query("password") password: String
     ): Call<ResponseBody>
 
+    @POST("account/update/info")
+    fun updateInfo(@Body request: AccountUpdateInfo): Call<ResponseBody>
+
     @POST("account/update/nickname")
     fun updateNickname(
         @Query("token") token: String,
@@ -59,6 +62,39 @@ interface AccountApi {
         @Part media: MultipartBody.Part
     ): Call<ResponseBody>
 
-    @POST("account/update/info")
-    fun updateInfo(@Body request: AccountUpdateInfo): Call<ResponseBody>
+    @POST("friends/request/send")
+    fun sendFriendRequest(
+        @Query("fromToken") fromToken: String,
+        @Query("toNickname") toNickname: String,
+        @Query("message") message: String
+    ): Call<ResponseBody>
+
+    @POST("friends/request/accept")
+    fun acceptFriendRequest(
+        @Query("toNickname") toNickname: String,
+        @Query("fromToken") fromToken: String
+    ): Call<ResponseBody>
+
+    @POST("friends/request/decline")
+    fun declineFriendRequest(
+        @Query("toNickname") toNickname: String,
+        @Query("fromToken") fromToken: String
+    ): Call<ResponseBody>
+
+    @POST("friends/request/cancel")
+    fun cancelFriendRequest(
+        @Query("toNickname") toNickname: String,
+        @Query("fromToken") fromToken: String
+    ): Call<ResponseBody>
+
+    @POST("friends/remove")
+    fun removeFriend(
+        @Query("toNickname") toNickname: String,
+        @Query("fromToken") fromToken: String
+    ): Call<ResponseBody>
+
+    @GET("friends/search")
+    fun searchFriends(
+        @Query("nickname") nickname: String
+    ): Call<ResponseBody>
 }

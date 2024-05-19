@@ -12,6 +12,7 @@
     <string name="o"><![CDATA[\\(>o<)/]]></string>
     <string name="map">Карта</string>
     <string name="account">Аккаунт</string>
+    <string name="friends">Друзья</string>
     <string name="add_more_info">Добавьте больше информации</string>
     <string name="about_you">о себе</string>
     <string name="name">Имя</string>
@@ -36,6 +37,8 @@
     <string name="failed_to_upload_media">Не удалось загрузить изображение</string>
     <string name="failed_to_decode_media">Не удалось декодировать изображение</string>
     <string name="failed_to_pick_media">Ошибка при выборе изображения</string>
+    <string name="save_changes">Сохранить изменения</string>
+    <string name="messenger">Мессенджер</string>
 
     <string-array name="music_preferences">
         <item>Рэп</item>

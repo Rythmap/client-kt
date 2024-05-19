@@ -12,6 +12,7 @@
     <string name="o"><![CDATA[\\(>o<)/]]></string>
     <string name="map">Map</string>
     <string name="account">Account</string>
+    <string name="friends">Friends</string>
     <string name="add_more_info">Add more info</string>
     <string name="about_you">about you</string>
     <string name="name">Name</string>
@@ -37,7 +38,8 @@
     <string name="failed_to_decode_media">Failed to decode media</string>
     <string name="failed_to_pick_media">Failed to pick media</string>
     <string name="save_changes">Save changes</string>
-
+    <string name="messenger">Messenger</string>
+    <string name="search">Search</string>
 
     <string-array name="music_preferences">
         <item>Rap</item>

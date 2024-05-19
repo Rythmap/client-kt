@@ -137,6 +137,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
+                R.id.friends -> {
+                    loadFragment(FriendsFragment())
+                    true
+                }
+
                 R.id.account -> {
                     loadFragment(AccountFragment())
                     true

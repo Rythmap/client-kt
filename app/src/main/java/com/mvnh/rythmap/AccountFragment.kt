@@ -1,5 +1,6 @@
 package com.mvnh.rythmap
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.transition.Fade
@@ -59,13 +60,22 @@ class AccountFragment : Fragment() {
             }
             if (binding.profilePfp.drawable != null) {
                 val bitmapWidth = if (binding.profilePfp.width > 0) binding.profilePfp.width else 1
-                val bitmapHeight = if (binding.profilePfp.height > 0) binding.profilePfp.height else 1
-                bundle.putParcelable("avatar", binding.profilePfp.drawable.toBitmap(bitmapWidth, bitmapHeight))
+                val bitmapHeight =
+                    if (binding.profilePfp.height > 0) binding.profilePfp.height else 1
+                bundle.putParcelable(
+                    "avatar",
+                    binding.profilePfp.drawable.toBitmap(bitmapWidth, bitmapHeight)
+                )
             }
             if (binding.profileBanner.drawable != null) {
-                val bitmapWidth = if (binding.profileBanner.width > 0) binding.profileBanner.width else 1
-                val bitmapHeight = if (binding.profileBanner.height > 0) binding.profileBanner.height else 1
-                bundle.putParcelable("banner", binding.profileBanner.drawable.toBitmap(bitmapWidth, bitmapHeight))
+                val bitmapWidth =
+                    if (binding.profileBanner.width > 0) binding.profileBanner.width else 1
+                val bitmapHeight =
+                    if (binding.profileBanner.height > 0) binding.profileBanner.height else 1
+                bundle.putParcelable(
+                    "banner",
+                    binding.profileBanner.drawable.toBitmap(bitmapWidth, bitmapHeight)
+                )
             }
             editProfileBottomSheet.arguments = bundle
 
@@ -76,61 +86,89 @@ class AccountFragment : Fragment() {
     }
 
     private fun retrieveAndShowAccountInfo(token: String?) {
-        token ?: return
+        if (token == null) {
+            Log.e(TAG, "Token is null")
+            tokenManager.clearToken()
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.failed_to_retrieve_account_info),
+                Toast.LENGTH_SHORT
+            ).show()
+            startActivity(Intent(requireContext(), LoginActivity::class.java))
+            requireActivity().finishAffinity()
+        }
 
         binding.progressBar.visibility = View.VISIBLE
         binding.accountContent.visibility = View.GONE
 
         val call = accountApi.getPrivateAccountInfo(token)
         call.enqueue(object : Callback<AccountInfoPrivate> {
-            override fun onResponse(call: Call<AccountInfoPrivate>, response: Response<AccountInfoPrivate>) {
+            override fun onResponse(
+                call: Call<AccountInfoPrivate>,
+                response: Response<AccountInfoPrivate>
+            ) {
                 if (response.isSuccessful) {
                     val accountInfo = response.body()
                     Log.d(TAG, "Account info: $accountInfo")
 
-                    var visibleName = ""
-                    if (!accountInfo?.visibleName?.name.isNullOrBlank()) {
-                        visibleName += accountInfo?.visibleName?.name
+                    if (isAdded && activity != null) {
+                        var visibleName = ""
+                        if (!accountInfo?.visibleName?.name.isNullOrBlank()) {
+                            visibleName += accountInfo?.visibleName?.name
 
-                        if (!accountInfo?.visibleName?.surname.isNullOrBlank()) {
-                            visibleName += " ${accountInfo?.visibleName?.surname}"
+                            if (!accountInfo?.visibleName?.surname.isNullOrBlank()) {
+                                visibleName += " ${accountInfo?.visibleName?.surname}"
+                            }
                         }
-                    }
-                    if (visibleName.isBlank()) {
-                        binding.visibleNameTextView.text = accountInfo?.nickname
-                    } else {
-                        binding.visibleNameTextView.text = visibleName
-                    }
-                    binding.usernameTextView.text = accountInfo?.nickname
-                    if (accountInfo?.about != null && accountInfo.about.isNotEmpty()) {
-                        binding.descriptionTextView.text = accountInfo.about
-                        binding.descriptionTextView.visibility = View.VISIBLE
-                    }
+                        if (visibleName.isBlank()) {
+                            binding.visibleNameTextView.text = accountInfo?.nickname
+                        } else {
+                            binding.visibleNameTextView.text = visibleName
+                        }
+                        binding.usernameTextView.text = accountInfo?.nickname
+                        if (accountInfo?.about != null && accountInfo.about.isNotEmpty()) {
+                            binding.descriptionTextView.text = accountInfo.about
+                            binding.descriptionTextView.visibility = View.VISIBLE
+                        }
 
-                    val accountIdSharedPref = requireContext().getSharedPreferences("accountId", 0)
-                    if (accountInfo?.accountId == accountIdSharedPref.getString("accountId", null)) {
-                        binding.addToFriendsButton.visibility = View.GONE
-                        binding.sendMessageButton.visibility = View.GONE
+                        val accountIdSharedPref =
+                            requireContext().getSharedPreferences("accountId", 0)
+                        if (accountInfo?.accountId == accountIdSharedPref.getString(
+                                "accountId",
+                                null
+                            )
+                        ) {
+                            binding.addToFriendsButton.visibility = View.GONE
+                            binding.sendMessageButton.visibility = View.GONE
 
-                        binding.editProfileButton.visibility = View.VISIBLE
-                    } else {
-                        binding.addToFriendsButton.visibility = View.VISIBLE
-                        binding.sendMessageButton.visibility = View.VISIBLE
+                            binding.editProfileButton.visibility = View.VISIBLE
+                        } else {
+                            binding.addToFriendsButton.visibility = View.VISIBLE
+                            binding.sendMessageButton.visibility = View.VISIBLE
 
-                        binding.editProfileButton.visibility = View.GONE
+                            binding.editProfileButton.visibility = View.GONE
+                        }
+
+                        retrieveMedia(accountInfo?.nickname ?: "", "avatar")
+                        retrieveMedia(accountInfo?.nickname ?: "", "banner")
                     }
-
-                    retrieveMedia(accountInfo?.nickname ?: "", "avatar")
-                    retrieveMedia(accountInfo?.nickname ?: "", "banner")
                 } else {
                     Log.e(TAG, "Failed to retrieve account info: ${response.errorBody()?.string()}")
-                    Toast.makeText(requireContext(), getString(R.string.failed_to_retrieve_account_info), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.failed_to_retrieve_account_info),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<AccountInfoPrivate>, t: Throwable) {
                 Log.e(TAG, "Failed to retrieve account info", t)
-                Toast.makeText(requireContext(), getString(R.string.failed_to_retrieve_account_info), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.failed_to_retrieve_account_info),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -146,7 +184,8 @@ class AccountFragment : Fragment() {
                 if (response.isSuccessful) {
                     try {
                         val mediaBytes = response.body()?.bytes()
-                        val bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes?.size ?: 0)
+                        val bitmap =
+                            BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes?.size ?: 0)
                         if (type == "avatar") {
                             binding.profilePfp.setImageBitmap(bitmap)
                         } else {
@@ -167,7 +206,11 @@ class AccountFragment : Fragment() {
                         }
                     } catch (e: Exception) {
                         Log.e(TAG, "Failed to decode media", e)
-                        Toast.makeText(requireContext(), getString(R.string.failed_to_decode_media), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.failed_to_decode_media),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
                     Log.e(TAG, "Failed to retrieve media: ${response.errorBody()?.string()}")

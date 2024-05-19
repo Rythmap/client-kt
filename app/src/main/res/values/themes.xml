@@ -30,8 +30,13 @@
         <!-- <item name="android:fontFamily">@font/inter_bold</item> -->
     </style>
 
-    <style name="roundedImageView" parent="">
+    <style name="roundedImageView25" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">25dp</item>
+    </style>
+
+    <style name="roundedImageView20" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
     </style>
 </resources>

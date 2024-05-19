@@ -7,6 +7,12 @@
         android:icon="@drawable/map_icon"
         android:title="@string/map" />
     <item
+        android:id="@+id/friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/group_icon"
+        android:title="@string/friends" />
+    <item
         android:id="@+id/account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

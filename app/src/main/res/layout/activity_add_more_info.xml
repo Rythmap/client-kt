@@ -46,7 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/profilePfp"
-        app:shapeAppearanceOverlay="@style/roundedImageView"
+        app:shapeAppearanceOverlay="@style/roundedImageView25"
         app:strokeColor="?attr/colorSecondary"
         app:strokeWidth="8dp"
         android:padding="4dp"/>
@@ -62,7 +62,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/aboutYouLabel"
-        app:shapeAppearanceOverlay="@style/roundedImageView"
+        app:shapeAppearanceOverlay="@style/roundedImageView25"
         app:strokeColor="?attr/colorPrimary"
         app:strokeWidth="8dp"
         android:scaleType="centerCrop" />
