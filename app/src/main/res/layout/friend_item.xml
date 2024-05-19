@@ -57,5 +57,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/addToFriendsButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/person_add_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/sendMessageButton"
+        app:layout_constraintEnd_toStartOf="@+id/sendMessageButton"
+        app:layout_constraintTop_toTopOf="@+id/sendMessageButton" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,6 +18,7 @@ import com.mvnh.rythmap.databinding.FragmentAccountBinding
 import com.mvnh.rythmap.responses.ServiceGenerator
 import com.mvnh.rythmap.responses.account.AccountApi
 import com.mvnh.rythmap.responses.account.entities.AccountInfoPrivate
+import com.mvnh.rythmap.responses.account.entities.AccountInfoPublic
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -40,7 +41,68 @@ class AccountFragment : Fragment() {
         tokenManager = TokenManager(requireContext())
         accountApi = ServiceGenerator.createService(AccountApi::class.java)
 
-        retrieveAndShowAccountInfo(tokenManager.getToken())
+        if (arguments != null) {
+            binding.editProfileButton.visibility = View.GONE
+            binding.accountContent.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
+
+            val nickname = arguments?.getString("nickname")
+            val call = accountApi.getPublicAccountInfo(nickname!!)
+            call.enqueue(object : Callback<AccountInfoPublic> {
+                override fun onResponse(
+                    call: Call<AccountInfoPublic>,
+                    response: Response<AccountInfoPublic>
+                ) {
+                    if (response.isSuccessful) {
+                        val accountInfo = response.body()
+                        Log.d(TAG, "Account info: $accountInfo")
+
+                        if (isAdded && activity != null) {
+                            var visibleName = ""
+                            if (!accountInfo?.visibleName?.name.isNullOrBlank()) {
+                                visibleName += accountInfo?.visibleName?.name
+
+                                if (!accountInfo?.visibleName?.surname.isNullOrBlank()) {
+                                    visibleName += " ${accountInfo?.visibleName?.surname}"
+                                }
+                            }
+                            if (visibleName.isBlank()) {
+                                binding.visibleNameTextView.text = accountInfo?.nickname
+                            } else {
+                                binding.visibleNameTextView.text = visibleName
+                            }
+                            binding.usernameTextView.text = accountInfo?.nickname
+                            if (accountInfo?.about != null && accountInfo.about.isNotEmpty()) {
+                                binding.descriptionTextView.text = accountInfo.about
+                                binding.descriptionTextView.visibility = View.VISIBLE
+                            }
+
+                            retrieveMedia(accountInfo?.nickname ?: "", "avatar")
+                            retrieveMedia(accountInfo?.nickname ?: "", "banner")
+                        }
+                    } else {
+                        Log.e(TAG, "Failed to retrieve account info: ${response.errorBody()?.string()}")
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.failed_to_retrieve_account_info),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<AccountInfoPublic>, t: Throwable) {
+                    Log.e(TAG, "Failed to retrieve account info", t)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.failed_to_retrieve_account_info),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        } else {
+            retrieveAndShowAccountInfo(tokenManager.getToken())
+        }
+
         val editProfileSheetVM: EditProfileSheetVM by activityViewModels()
         editProfileSheetVM.accountInfoUpdated.observe(viewLifecycleOwner) { isUpdated ->
             if (isUpdated) {
@@ -224,6 +286,8 @@ class AccountFragment : Fragment() {
 
                         binding.progressBar.visibility = View.GONE
                         binding.accountContent.visibility = View.VISIBLE
+
+                        retrieveMediaCallsCompleted = 0
                     }
                 }
             }
@@ -240,6 +304,8 @@ class AccountFragment : Fragment() {
 
                     binding.progressBar.visibility = View.GONE
                     binding.accountContent.visibility = View.VISIBLE
+
+                    retrieveMediaCallsCompleted = 0
                 }
             }
         })

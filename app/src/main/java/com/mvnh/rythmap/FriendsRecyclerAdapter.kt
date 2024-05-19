@@ -1,17 +1,27 @@
 package com.mvnh.rythmap
 
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import com.mvnh.rythmap.SecretData.TAG
+import com.mvnh.rythmap.responses.ServiceGenerator
+import com.mvnh.rythmap.responses.account.AccountApi
 import com.mvnh.rythmap.responses.account.entities.AccountInfoBasic
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class FriendsRecyclerAdapter(private var friends: List<AccountInfoBasic>) :
+class FriendsRecyclerAdapter(private var friends: List<AccountInfoBasic>, private val context: Context) :
     RecyclerView.Adapter<FriendsRecyclerAdapter.FriendViewHolder>() {
 
     class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -19,6 +29,7 @@ class FriendsRecyclerAdapter(private var friends: List<AccountInfoBasic>) :
         val visibleNameTextView: TextView = itemView.findViewById(R.id.visibleNameLabel)
         val nicknameTextView: TextView = itemView.findViewById(R.id.usernameLabel)
         val sendMessageButton: Button = itemView.findViewById(R.id.sendMessageButton)
+        val addToFriendsButton: Button = itemView.findViewById(R.id.addToFriendsButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
@@ -36,7 +47,6 @@ class FriendsRecyclerAdapter(private var friends: List<AccountInfoBasic>) :
         if (currentItem.visibleName != null) {
             if (currentItem.visibleName.name != null) {
                 visibleName = currentItem.visibleName.name!!
-                Log.d(TAG, "Visible name: $visibleName")
                 if (currentItem.visibleName.surname != null) {
                     visibleName += " ${currentItem.visibleName.surname}"
                 }
@@ -48,10 +58,60 @@ class FriendsRecyclerAdapter(private var friends: List<AccountInfoBasic>) :
         holder.visibleNameTextView.text = visibleName
 
         holder.nicknameTextView.text = currentItem.nickname
+
+        retrieveMedia(currentItem.nickname, "avatar", holder.profilePfp)
+
+        val accountId = context.getSharedPreferences("accountId", Context.MODE_PRIVATE).getString("accountId", null)
+        if (currentItem.accountId == accountId) {
+            holder.addToFriendsButton.visibility = View.GONE
+        }
+
+        holder.itemView.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("nickname", currentItem.nickname)
+
+            val fragment = AccountFragment()
+            fragment.arguments = bundle
+
+            val fragmentManager = (context as MainActivity).supportFragmentManager
+            fragmentManager.beginTransaction().apply {
+                replace(R.id.fragmentContainerView, fragment)
+                addToBackStack(null)
+                commit()
+            }
+        }
     }
 
     fun setFriends(newFriends: List<AccountInfoBasic>) {
         friends = newFriends.toMutableList()
         notifyDataSetChanged()
+    }
+
+    private var retrieveMediaCallsCompleted = 0
+    private fun retrieveMedia(nickname: String, type: String, imageView: ShapeableImageView) {
+        Log.d(TAG, "Retrieving media for $nickname")
+
+        val accountApi = ServiceGenerator.createService(AccountApi::class.java)
+        val call = accountApi.getMedia(nickname, type)
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "Media retrieved successfully")
+                    try {
+                        val mediaBytes = response.body()?.bytes()
+                        val bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes?.size ?: 0)
+                        imageView.setImageBitmap(bitmap)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to decode media", e)
+                    }
+                } else {
+                    Log.e(TAG, "Failed to retrieve media: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e(TAG, "Failed to retrieve media", t)
+            }
+        })
     }
 }

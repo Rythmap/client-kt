@@ -96,5 +96,5 @@ interface AccountApi {
     @GET("friends/search")
     fun searchFriends(
         @Query("nickname") nickname: String
-    ): Call<ResponseBody>
+    ): Call<Map<String, AccountInfoBasic>>
 }

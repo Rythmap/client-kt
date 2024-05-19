@@ -1,5 +1,7 @@
 package com.mvnh.rythmap
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import com.mvnh.rythmap.SecretData.TAG
 import com.mvnh.rythmap.databinding.FragmentFriendsBinding
 import com.mvnh.rythmap.responses.ServiceGenerator
@@ -15,6 +18,7 @@ import com.mvnh.rythmap.responses.account.entities.AccountInfoBasic
 import com.mvnh.rythmap.responses.account.entities.AccountInfoPrivate
 import com.mvnh.rythmap.responses.account.entities.AccountInfoPublic
 import com.mvnh.rythmap.responses.account.entities.AccountVisibleName
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,6 +28,8 @@ class FriendsFragment : Fragment() {
     private lateinit var binding: FragmentFriendsBinding
     private lateinit var tokenManager: TokenManager
     private lateinit var accountApi: AccountApi
+
+    private var retrieveFriendsCallsCompleted = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,8 +43,12 @@ class FriendsFragment : Fragment() {
         val recyclerView = binding.friendsRecyclerView
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         recyclerView.adapter =
-            FriendsRecyclerAdapter(mutableListOf())
+            FriendsRecyclerAdapter(mutableListOf(), requireContext())
         retrieveAndShowFriends(tokenManager.getToken()!!)
+
+        binding.searchEditText.addTextChangedListener {
+            searchFriends(it.toString())
+        }
 
         return binding.root
     }
@@ -61,7 +71,7 @@ class FriendsFragment : Fragment() {
                     if (accountInfo?.friends != null) {
                         Log.d(TAG, "Friends фыа: ${accountInfo.friends}")
                         for (friend in accountInfo.friends) {
-                            friends.addAll(retrieveFriendInfo(friend))
+                            friends.addAll(retrieveFriendInfo(friend, accountInfo.friends.size))
                         }
                     }
                 } else {
@@ -79,7 +89,7 @@ class FriendsFragment : Fragment() {
         return friends
     }
 
-    private fun retrieveFriendInfo(friend: String): List<AccountInfoBasic> {
+    private fun retrieveFriendInfo(friend: String, friendsAmount: Int): List<AccountInfoBasic> {
         val friends = mutableListOf<AccountInfoBasic>()
 
         val call = accountApi.getPublicAccountInfo(friend)
@@ -105,7 +115,8 @@ class FriendsFragment : Fragment() {
                             visibleName.name = accountInfo.nickname
                         }
                         val nickname = accountInfo.nickname
-                        val friendInfo = AccountInfoBasic(friend, visibleName, nickname)
+                        val friendInfo = AccountInfoBasic(accountInfo.accountId, nickname, visibleName, accountInfo.createdAt)
+
                         friends.add(friendInfo)
                         activity?.runOnUiThread {
                             (binding.friendsRecyclerView.adapter as FriendsRecyclerAdapter).setFriends(
@@ -113,19 +124,75 @@ class FriendsFragment : Fragment() {
                             )
                             Log.d(TAG, "RecyclerView updated with friends: $friends")
                         }
+
+                        retrieveFriendsCallsCompleted++
+                        if (retrieveFriendsCallsCompleted == friendsAmount) {
+                            binding.progressBar.visibility = View.GONE
+                            binding.friendsContent.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
 
             override fun onFailure(call: Call<AccountInfoPublic>, t: Throwable) {
                 Log.d(TAG, "Failed to retrieve friend: ${t.message}")
-                Toast.makeText(context, "Failed to retrieve friend", Toast.LENGTH_SHORT).show()
+
+                retrieveFriendsCallsCompleted++
+                if (retrieveFriendsCallsCompleted == friendsAmount) {
+                    binding.progressBar.visibility = View.GONE
+                    binding.friendsContent.visibility = View.VISIBLE
+                }
             }
         })
 
+        return friends
+    }
+
+    private fun searchFriends(query: String) {
+        val call = accountApi.searchFriends(query)
+        call.enqueue(object : Callback<Map<String, AccountInfoBasic>> {
+            override fun onResponse(
+                call: Call<Map<String, AccountInfoBasic>>,
+                response: Response<Map<String, AccountInfoBasic>>
+            ) {
+                if (response.isSuccessful) {
+                    val friendsResponse = response.body()
+                    Log.d(TAG, "Friends found: $friendsResponse")
+
+                    val friends = mutableListOf<AccountInfoBasic>()
+                    friendsResponse?.forEach { (nickname, accountInfo) ->
+                        val friend = AccountInfoBasic(
+                            accountInfo.accountId,
+                            nickname,
+                            accountInfo.visibleName,
+                            accountInfo.createdAt
+                        )
+                        friends.add(friend)
+
+                        activity?.runOnUiThread {
+                            (binding.friendsRecyclerView.adapter as FriendsRecyclerAdapter).setFriends(
+                                friends
+                            )
+                            Log.d(TAG, "RecyclerView updated with friends: $friends")
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "Failed to search friends: ${response.message()}")
+                    Toast.makeText(context, "Failed to search friends", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Map<String, AccountInfoBasic>>, t: Throwable) {
+                Log.d(TAG, "Failed to search friends: ${t.message}")
+                Toast.makeText(context, "Failed to search friends", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        retrieveAndShowFriends(tokenManager.getToken()!!)
         binding.friendsContent.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
-
-        return friends
     }
 }

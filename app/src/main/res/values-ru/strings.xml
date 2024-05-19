@@ -39,6 +39,7 @@
     <string name="failed_to_pick_media">Ошибка при выборе изображения</string>
     <string name="save_changes">Сохранить изменения</string>
     <string name="messenger">Мессенджер</string>
+    <string name="search">Поиск</string>
 
     <string-array name="music_preferences">
         <item>Рэп</item>
