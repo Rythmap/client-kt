@@ -32,6 +32,9 @@ import com.mvnh.rythmap.responses.account.AccountApi
 import com.mvnh.rythmap.responses.account.entities.AccountInfoPrivate
 import com.mvnh.rythmap.responses.map.MapWSResponse
 import com.mvnh.rythmap.responses.yandex.YandexApi
+import com.mvnh.rythmap.responses.yandex.entities.YandexTrack
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -92,7 +95,7 @@ class MapFragment : Fragment() {
     ): View? {
         binding = FragmentMapBinding.inflate(inflater, container, false)
 
-        val tokenManager = TokenManager(requireContext())
+        tokenManager = TokenManager(requireContext())
         locationProvider = LocationServices.getFusedLocationProviderClient(requireContext())
 
         val jawgAccessToken = SecretData.JAWG_ACCESS_TOKEN
@@ -104,6 +107,7 @@ class MapFragment : Fragment() {
             }
         val styleUrl = "https://api.jawg.io/styles/$styleId.json?access-token=$jawgAccessToken"
 
+        yandexApi = ServiceGenerator.createService(YandexApi::class.java)
         accountApi = ServiceGenerator.createService(AccountApi::class.java)
         val call = accountApi.getPrivateAccountInfo(tokenManager.getToken()!!)
         call.enqueue(object : Callback<AccountInfoPrivate> {
@@ -199,7 +203,11 @@ class MapFragment : Fragment() {
                                                     .withIconSize(0.75f)
                                                 val symbol = symbolManager.create(symbolOptions)
 
-                                                symbolManager.addClickListener {
+                                                symbolManager.addClickListener { symbol ->
+                                                    val extendedBitmap = createExtendedMarkerBitmap(avatar, nickname)
+                                                    style.addImage(nickname + "_extended", extendedBitmap)
+                                                    symbol.iconImage = nickname + "_extended"
+                                                    symbolManager.update(symbol)
                                                     true
                                                 }
                                                 symbolManager.update(symbol)
@@ -286,7 +294,20 @@ class MapFragment : Fragment() {
                                 if (response.isSuccessful) {
                                     val trackInfo = response.body()?.string()
                                     if (trackInfo != null) {
+                                        Log.d(TAG, "Retrieved track info: $trackInfo")
 
+                                        val gson = Gson()
+                                        val yandexTrackInfo = gson.fromJson(trackInfo, YandexTrack::class.java)
+                                        Log.d(TAG, "Parsed track info: $yandexTrackInfo")
+
+                                        val trackName = yandexTrackInfo?.title
+                                        val artists = yandexTrackInfo?.artists
+                                        val artistsString = artists?.joinToString(separator = ", ") { artist -> artist.name }
+
+                                        val trackNameTextView = markerLayout.findViewById<TextView>(R.id.trackNameTextView)
+                                        val artistsTextView = markerLayout.findViewById<TextView>(R.id.artistsTextView)
+                                        trackNameTextView.text = trackName
+                                        artistsTextView.text = artistsString
                                     }
                                 } else {
                                     Log.e(TAG, "Failed to retrieve track info: ${response.errorBody()}")

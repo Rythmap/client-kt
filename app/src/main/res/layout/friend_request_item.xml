@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profilePfp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="?attr/colorSurface"
+        android:padding="4dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/photo_camera_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/roundedImageView20"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="8dp" />
+
+    <TextView
+        android:id="@+id/visibleNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="Visible name"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/profilePfp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/nicknameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="nickname"
+        app:layout_constraintStart_toEndOf="@+id/profilePfp"
+        app:layout_constraintTop_toBottomOf="@+id/visibleNameTextView" />
+
+    <Button
+        android:id="@+id/acceptFriendRequestButton"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="15dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/accept"
+        app:cornerRadius="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profilePfp"
+        app:layout_constraintTop_toBottomOf="@+id/nicknameTextView" />
+
+    <Button
+        android:id="@+id/declineFriendRequestButton"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="15dp"
+        android:backgroundTint="?attr/colorSecondaryContainer"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/decline"
+        android:textColor="?attr/colorSecondary"
+        app:cornerRadius="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/acceptFriendRequestButton"
+        app:layout_constraintTop_toBottomOf="@+id/nicknameTextView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

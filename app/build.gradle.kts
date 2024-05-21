@@ -68,6 +68,8 @@ dependencies {
     runtimeOnly(libs.androidx.lifecycle.viewmodel.ktx)
     runtimeOnly(libs.androidx.lifecycle.livedata.ktx)
 
+    implementation(libs.picasso)
+
     implementation(libs.androidx.recyclerview)
 
     implementation(libs.androidx.core.ktx)

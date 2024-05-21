@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/nicknameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/login_logo_background"
+        android:fontFamily="@font/inter_semibold"
+        android:padding="6dp"
+        android:text="mvnh"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/profilePfp"
+        app:layout_constraintStart_toStartOf="@+id/profilePfp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profilePfp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="5dp"
+        android:padding="4dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/photo_camera_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nicknameTextView"
+        app:shapeAppearanceOverlay="@style/roundedImageView20"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="8dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/login_frame"
+        app:layout_constraintStart_toEndOf="@+id/profilePfp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/trackImageView"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/x"
+            app:shapeAppearanceOverlay="@style/roundedImageView25"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="?attr/colorPrimary"
+            app:strokeWidth="8dp"
+            android:padding="4dp"/>
+
+        <TextView
+            android:id="@+id/trackNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="25dp"
+            android:fontFamily="@font/inter_semibold"
+            android:text="Sinners"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/trackImageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/artistsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="Da Sodden Night"
+            app:layout_constraintStart_toEndOf="@+id/trackImageView"
+            app:layout_constraintTop_toBottomOf="@+id/trackNameTextView" />
+
+        <Button
+            android:id="@+id/listenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="25dp"
+            android:fontFamily="@font/inter_semibold"
+            android:text="Listen"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/trackImageView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
