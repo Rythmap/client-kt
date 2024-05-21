@@ -65,17 +65,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchTextInputLayout" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profilePfp"
+        <Button
+            android:id="@+id/friendRequestsButton"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginTop="50dp"
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="10dp"
+            android:background="@drawable/group_icon"
             app:layout_constraintBottom_toTopOf="@+id/searchTextInputLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/roundedImageView20"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar

@@ -1,7 +1,5 @@
 package com.mvnh.rythmap
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,7 +16,6 @@ import com.mvnh.rythmap.responses.account.entities.AccountInfoBasic
 import com.mvnh.rythmap.responses.account.entities.AccountInfoPrivate
 import com.mvnh.rythmap.responses.account.entities.AccountInfoPublic
 import com.mvnh.rythmap.responses.account.entities.AccountVisibleName
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,7 +40,7 @@ class FriendsFragment : Fragment() {
         val recyclerView = binding.friendsRecyclerView
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         recyclerView.adapter =
-            FriendsRecyclerAdapter(mutableListOf(), requireContext())
+            MessengerRecyclerAdapter(mutableListOf(), requireContext())
         retrieveAndShowFriends(tokenManager.getToken()!!)
 
         binding.searchEditText.addTextChangedListener {
@@ -119,7 +116,7 @@ class FriendsFragment : Fragment() {
 
                         friends.add(friendInfo)
                         activity?.runOnUiThread {
-                            (binding.friendsRecyclerView.adapter as FriendsRecyclerAdapter).setFriends(
+                            (binding.friendsRecyclerView.adapter as MessengerRecyclerAdapter).setFriends(
                                 friends
                             )
                             Log.d(TAG, "RecyclerView updated with friends: $friends")
@@ -170,7 +167,7 @@ class FriendsFragment : Fragment() {
                         friends.add(friend)
 
                         activity?.runOnUiThread {
-                            (binding.friendsRecyclerView.adapter as FriendsRecyclerAdapter).setFriends(
+                            (binding.friendsRecyclerView.adapter as MessengerRecyclerAdapter).setFriends(
                                 friends
                             )
                             Log.d(TAG, "RecyclerView updated with friends: $friends")

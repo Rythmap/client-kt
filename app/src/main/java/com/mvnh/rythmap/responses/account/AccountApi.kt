@@ -2,7 +2,6 @@ package com.mvnh.rythmap.responses.account
 
 import com.mvnh.rythmap.responses.account.entities.*
 import okhttp3.MultipartBody
-
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -64,33 +63,27 @@ interface AccountApi {
 
     @POST("friends/request/send")
     fun sendFriendRequest(
-        @Query("fromToken") fromToken: String,
-        @Query("toNickname") toNickname: String,
-        @Query("message") message: String
+        @Body request: SendFriendRequest
     ): Call<ResponseBody>
 
     @POST("friends/request/accept")
     fun acceptFriendRequest(
-        @Query("toNickname") toNickname: String,
-        @Query("fromToken") fromToken: String
+        @Body request: AnyFriendRequest
     ): Call<ResponseBody>
 
     @POST("friends/request/decline")
     fun declineFriendRequest(
-        @Query("toNickname") toNickname: String,
-        @Query("fromToken") fromToken: String
+        @Body request: AnyFriendRequest
     ): Call<ResponseBody>
 
     @POST("friends/request/cancel")
     fun cancelFriendRequest(
-        @Query("toNickname") toNickname: String,
-        @Query("fromToken") fromToken: String
+        @Body request: AnyFriendRequest
     ): Call<ResponseBody>
 
     @POST("friends/remove")
     fun removeFriend(
-        @Query("toNickname") toNickname: String,
-        @Query("fromToken") fromToken: String
+        @Body request: AnyFriendRequest
     ): Call<ResponseBody>
 
     @GET("friends/search")

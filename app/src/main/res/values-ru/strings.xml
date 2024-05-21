@@ -40,6 +40,15 @@
     <string name="save_changes">Сохранить изменения</string>
     <string name="messenger">Мессенджер</string>
     <string name="search">Поиск</string>
+    <string name="friend_request_sent">Запрос в друзья отправлен</string>
+    <string name="friend_request_cancelled">Запрос в друзья отменен</string>
+    <string name="friend_request_accepted">Запрос в друзья принят</string>
+    <string name="friend_request_declined">Запрос в друзья отклонен</string>
+    <string name="friend_removed">Друг удален</string>
+    <string name="failed_to_send_friend_request">Не удалось отправить запрос в друзья</string>
+    <string name="friend_requests">Запросы в друзья</string>
+    <string name="accept">Принять</string>
+    <string name="decline">Отклонить</string>
 
     <string-array name="music_preferences">
         <item>Рэп</item>

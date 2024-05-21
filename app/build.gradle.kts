@@ -49,7 +49,7 @@ dependencies {
     implementation(libs.androidx.security.crypto.v110alpha03)
 
     // MapLibre
-    runtimeOnly(libs.android.sdk)
+    implementation(libs.android.sdk)
     implementation(libs.android.plugin.annotation.v9)
 
     // Yandex auth SDK
@@ -59,6 +59,7 @@ dependencies {
 
     // Apache Commons IO
     implementation(libs.commons.io)
+    implementation(libs.play.services.location)
 
     runtimeOnly(libs.androidx.activity.ktx)
     runtimeOnly(libs.androidx.fragment.ktx)

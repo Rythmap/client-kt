@@ -8,21 +8,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import com.mvnh.rythmap.SecretData.TAG
 import com.mvnh.rythmap.responses.ServiceGenerator
 import com.mvnh.rythmap.responses.account.AccountApi
 import com.mvnh.rythmap.responses.account.entities.AccountInfoBasic
+import com.mvnh.rythmap.responses.account.entities.SendFriendRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FriendsRecyclerAdapter(private var friends: List<AccountInfoBasic>, private val context: Context) :
-    RecyclerView.Adapter<FriendsRecyclerAdapter.FriendViewHolder>() {
+class MessengerRecyclerAdapter(private var friends: List<AccountInfoBasic>, private val context: Context) :
+    RecyclerView.Adapter<MessengerRecyclerAdapter.FriendViewHolder>() {
 
     class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val profilePfp: ShapeableImageView = itemView.findViewById(R.id.profilePfp)
@@ -31,6 +32,8 @@ class FriendsRecyclerAdapter(private var friends: List<AccountInfoBasic>, privat
         val sendMessageButton: Button = itemView.findViewById(R.id.sendMessageButton)
         val addToFriendsButton: Button = itemView.findViewById(R.id.addToFriendsButton)
     }
+
+    private var tokenManager: TokenManager = TokenManager(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -79,6 +82,28 @@ class FriendsRecyclerAdapter(private var friends: List<AccountInfoBasic>, privat
                 addToBackStack(null)
                 commit()
             }
+        }
+
+        holder.addToFriendsButton.setOnClickListener {
+            val accountApi = ServiceGenerator.createService(AccountApi::class.java)
+            val call = accountApi.sendFriendRequest(
+                SendFriendRequest(tokenManager.getToken()!!, currentItem.nickname)
+            )
+            call.enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "Friend request sent successfully")
+                        Toast.makeText(context, context.getString(R.string.friend_request_sent), Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Log.e(TAG, "Failed to send friend request: ${response.raw()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.e(TAG, "Failed to send friend request", t)
+                }
+            })
         }
     }
 
