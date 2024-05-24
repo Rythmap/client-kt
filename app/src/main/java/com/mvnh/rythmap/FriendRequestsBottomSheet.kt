@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mvnh.rythmap.databinding.FriendRequestsBottomSheetBinding
-import com.mvnh.rythmap.responses.ServiceGenerator
-import com.mvnh.rythmap.responses.account.AccountApi
+import com.mvnh.rythmap.retrofit.ServiceGenerator
+import com.mvnh.rythmap.retrofit.account.AccountApi
+import com.mvnh.rythmap.utils.TokenManager
 
 class FriendRequestsBottomSheet: BottomSheetDialogFragment() {
 

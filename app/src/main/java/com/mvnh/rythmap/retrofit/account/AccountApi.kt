@@ -1,6 +1,6 @@
-package com.mvnh.rythmap.responses.account
+package com.mvnh.rythmap.retrofit.account
 
-import com.mvnh.rythmap.responses.account.entities.*
+import com.mvnh.rythmap.retrofit.account.entities.*
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call

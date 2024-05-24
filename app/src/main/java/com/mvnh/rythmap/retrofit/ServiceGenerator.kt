@@ -1,6 +1,6 @@
-package com.mvnh.rythmap.responses
+package com.mvnh.rythmap.retrofit
 
-import com.mvnh.rythmap.SecretData
+import com.mvnh.rythmap.utils.SecretData
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

@@ -1,4 +1,4 @@
-package com.mvnh.rythmap
+package com.mvnh.rythmap.recycler
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,7 +8,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
-import com.mvnh.rythmap.responses.account.entities.AccountInfoBasic
+import com.mvnh.rythmap.R
+import com.mvnh.rythmap.utils.TokenManager
+import com.mvnh.rythmap.retrofit.account.entities.AccountInfoBasic
 
 class FriendRequestsRecyclerAdapter(private var friendRequests: List<AccountInfoBasic>, private val context: Context) :
     RecyclerView.Adapter<FriendRequestsRecyclerAdapter.FriendRequestViewHolder>() {

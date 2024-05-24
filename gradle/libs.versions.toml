@@ -6,6 +6,7 @@ androidSdk = "11.0.0"
 androidSdkVersion = "11.0.0"
 androidxSecurityCrypto = "1.1.0-alpha03"
 authsdkVersion = "3.1.0"
+coil = "2.6.0"
 commonsIo = "2.16.1"
 fragmentKtx = "1.7.1"
 gson = "2.10.1"
@@ -43,6 +44,7 @@ androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fr
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 androidx-security-crypto-v110alpha03 = { module = "androidx.security:security-crypto", version.ref = "androidxSecurityCrypto" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

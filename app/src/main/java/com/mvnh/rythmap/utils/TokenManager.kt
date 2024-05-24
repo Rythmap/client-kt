@@ -1,4 +1,4 @@
-package com.mvnh.rythmap
+package com.mvnh.rythmap.utils
 
 import android.content.Context
 import android.content.SharedPreferences

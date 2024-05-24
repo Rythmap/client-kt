@@ -1,4 +1,4 @@
-package com.mvnh.rythmap.responses.yandex
+package com.mvnh.rythmap.retrofit.yandex
 
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -9,7 +9,7 @@ interface YandexApi {
     @GET("music/yandex/track/get_and_save_current")
     fun getAndSaveCurrent(
         @Query("rythmapToken") rythmapToken: String,
-        yandexToken: String
+        @Query("yandexToken") yandexToken: String
     ): Call<ResponseBody>
 
     @GET("music/yandex/track/info")

@@ -1,5 +1,6 @@
 package com.mvnh.rythmap
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -13,12 +14,18 @@ import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.mvnh.rythmap.SecretData.TAG
+import coil.load
+import com.google.gson.Gson
+import com.mvnh.rythmap.utils.SecretData.TAG
 import com.mvnh.rythmap.databinding.FragmentAccountBinding
-import com.mvnh.rythmap.responses.ServiceGenerator
-import com.mvnh.rythmap.responses.account.AccountApi
-import com.mvnh.rythmap.responses.account.entities.AccountInfoPrivate
-import com.mvnh.rythmap.responses.account.entities.AccountInfoPublic
+import com.mvnh.rythmap.retrofit.ServiceGenerator
+import com.mvnh.rythmap.retrofit.account.AccountApi
+import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPrivate
+import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPublic
+import com.mvnh.rythmap.retrofit.yandex.YandexApi
+import com.mvnh.rythmap.retrofit.yandex.entities.YandexTrack
+import com.mvnh.rythmap.utils.TokenManager
+import com.mvnh.rythmap.vm.EditProfileSheetVM
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -213,6 +220,12 @@ class AccountFragment : Fragment() {
 
                         retrieveMedia(accountInfo?.nickname ?: "", "avatar")
                         retrieveMedia(accountInfo?.nickname ?: "", "banner")
+
+                        val yandexTokenSharedPref = requireContext().getSharedPreferences("yandexToken", Context.MODE_PRIVATE)
+                        if (yandexTokenSharedPref.getString("yandexToken", null) != null) {
+                            Log.d(TAG, "Retrieving last track")
+                            retrieveLastTrack(tokenManager.getToken()!!, yandexTokenSharedPref.getString("yandexToken", null)!!)
+                        }
                     }
                 } else {
                     Log.e(TAG, "Failed to retrieve account info: ${response.errorBody()?.string()}")
@@ -307,6 +320,51 @@ class AccountFragment : Fragment() {
 
                     retrieveMediaCallsCompleted = 0
                 }
+            }
+        })
+    }
+
+    private fun retrieveLastTrack(rythmapToken: String, yandexToken: String) {
+        val yandexApi = ServiceGenerator.createService(YandexApi::class.java)
+        val call = yandexApi.getAndSaveCurrent(rythmapToken, yandexToken)
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    val getTrackInfo = yandexApi.getTrackInfo(response.body()?.string()!!)
+                    getTrackInfo.enqueue(object : Callback<ResponseBody> {
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            if (response.isSuccessful) {
+                                val trackInfo = Gson().fromJson(
+                                    response.body()?.string(),
+                                    YandexTrack::class.java
+                                )
+                                Log.d(TAG, "Current track: $trackInfo")
+
+                                if (isAdded && activity != null) {
+                                    binding.trackNameTextView.text = trackInfo.title
+                                    binding.artistNameTextView.text = trackInfo.artists.joinToString(", ") { it.name }
+                                    Log.d(TAG, "Track image: ${trackInfo.image.replace("%%", "1000x1000")}")
+                                    binding.trackImageView.load(trackInfo.image.replace("%%", "1000x1000"))
+                                }
+                            } else {
+                                Log.e(TAG, "Failed to retrieve current track info: ${response.message()}")
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            Log.e(TAG, "Failed to retrieve current track info", t)
+                        }
+                    })
+                } else {
+                    Log.e(TAG, "Failed to retrieve and save current track: ${response.raw()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e(TAG, "Failed to retrieve and save current track", t)
             }
         })
     }

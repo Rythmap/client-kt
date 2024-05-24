@@ -1,4 +1,4 @@
-package com.mvnh.rythmap.responses.account.entities
+package com.mvnh.rythmap.retrofit.account.entities
 
 import com.google.gson.annotations.SerializedName
 

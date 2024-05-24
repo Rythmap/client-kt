@@ -1,12 +1,12 @@
-package com.mvnh.rythmap
+package com.mvnh.rythmap.vm
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.mvnh.rythmap.SecretData.TAG
-import com.mvnh.rythmap.responses.ServiceGenerator
-import com.mvnh.rythmap.responses.account.AccountApi
-import com.mvnh.rythmap.responses.account.entities.AccountUpdateInfo
+import com.mvnh.rythmap.utils.SecretData.TAG
+import com.mvnh.rythmap.retrofit.ServiceGenerator
+import com.mvnh.rythmap.retrofit.account.AccountApi
+import com.mvnh.rythmap.retrofit.account.entities.AccountUpdateInfo
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback

@@ -1,4 +1,4 @@
-package com.mvnh.rythmap.responses.yandex.entities
+package com.mvnh.rythmap.retrofit.yandex.entities
 
 data class YandexToken(
     val token: String,

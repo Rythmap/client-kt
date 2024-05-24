@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.collection.valueIterator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -25,16 +24,15 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.mvnh.rythmap.SecretData.TAG
+import com.mvnh.rythmap.utils.SecretData.TAG
 import com.mvnh.rythmap.databinding.FragmentMapBinding
-import com.mvnh.rythmap.responses.ServiceGenerator
-import com.mvnh.rythmap.responses.account.AccountApi
-import com.mvnh.rythmap.responses.account.entities.AccountInfoPrivate
-import com.mvnh.rythmap.responses.map.MapWSResponse
-import com.mvnh.rythmap.responses.yandex.YandexApi
-import com.mvnh.rythmap.responses.yandex.entities.YandexTrack
-import com.squareup.picasso.Picasso
-import kotlinx.coroutines.delay
+import com.mvnh.rythmap.retrofit.ServiceGenerator
+import com.mvnh.rythmap.retrofit.account.AccountApi
+import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPrivate
+import com.mvnh.rythmap.retrofit.map.MapWSResponse
+import com.mvnh.rythmap.retrofit.yandex.YandexApi
+import com.mvnh.rythmap.utils.SecretData
+import com.mvnh.rythmap.utils.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -45,7 +43,6 @@ import org.maplibre.android.MapLibre
 import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapView
-import org.maplibre.android.plugins.annotation.Symbol
 import org.maplibre.android.plugins.annotation.SymbolManager
 import org.maplibre.android.plugins.annotation.SymbolOptions
 import retrofit2.Call
@@ -193,27 +190,32 @@ class MapFragment : Fragment() {
                                         if (response.isSuccessful) {
                                             Log.d(TAG, "Retrieved avatar for nickname: $nickname")
                                             val avatar = response.body()?.bytes()
-                                            if (avatar != null) {
-                                                val bitmap = createMarkerBitmap(avatar, nickname)
-                                                style.addImage(nickname, bitmap)
+                                            var bitmap: Bitmap? = null
+                                            bitmap = createMarkerBitmap(avatar!!, nickname)
 
-                                                val symbolOptions = SymbolOptions()
-                                                    .withLatLng(LatLng(latitude, longitude))
-                                                    .withIconImage(nickname)
-                                                    .withIconSize(0.75f)
-                                                val symbol = symbolManager.create(symbolOptions)
+                                            style.addImage(nickname, bitmap)
 
-                                                symbolManager.addClickListener { symbol ->
-                                                    val extendedBitmap = createExtendedMarkerBitmap(avatar, nickname)
-                                                    style.addImage(nickname + "_extended", extendedBitmap)
-                                                    symbol.iconImage = nickname + "_extended"
-                                                    symbolManager.update(symbol)
-                                                    true
-                                                }
+                                            val symbolOptions = SymbolOptions().withLatLng(LatLng(latitude, longitude)).withIconImage(nickname).withIconSize(0.75f)
+                                            val symbol = symbolManager.create(symbolOptions)
+
+                                            symbolManager.addClickListener { symbol ->
+                                                val extendedBitmap = createExtendedMarkerBitmap(
+                                                    avatar, nickname)
+                                                style.addImage(nickname + "_extended", extendedBitmap)
+                                                symbol.iconImage = nickname + "_extended"
                                                 symbolManager.update(symbol)
+                                                true
                                             }
+                                            symbolManager.update(symbol)
                                         } else {
                                             Log.e(TAG, "Failed to retrieve avatar: ${response.message()}")
+
+                                            val bitmap = createMarkerBitmap(byteArrayOf(), nickname)
+                                            style.addImage(nickname, bitmap)
+
+                                            val symbolOptions = SymbolOptions().withLatLng(LatLng(latitude, longitude)).withIconImage(nickname).withIconSize(0.75f)
+                                            val symbol = symbolManager.create(symbolOptions)
+                                            symbolManager.update(symbol)
                                         }
                                     }
 
@@ -277,57 +279,7 @@ class MapFragment : Fragment() {
         profilePfp.setImageBitmap(avatarBitmap)
         nicknameTextView.text = nickname
 
-        val getLastTracksCall = accountApi.getPrivateAccountInfo(tokenManager.getToken()!!)
-        getLastTracksCall.enqueue(object : Callback<AccountInfoPrivate> {
-            override fun onResponse(
-                call: Call<AccountInfoPrivate>, response: retrofit2.Response<AccountInfoPrivate>
-            ) {
-                if (response.isSuccessful) {
-                    val lastTracks = response.body()?.lastTracks
-                    if (lastTracks != null) {
-                        val getYandexMusicInfo = yandexApi.getTrackInfo(lastTracks.yandexTrackId)
-                        getYandexMusicInfo.enqueue(object : Callback<ResponseBody> {
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: retrofit2.Response<ResponseBody>
-                            ) {
-                                if (response.isSuccessful) {
-                                    val trackInfo = response.body()?.string()
-                                    if (trackInfo != null) {
-                                        Log.d(TAG, "Retrieved track info: $trackInfo")
-
-                                        val gson = Gson()
-                                        val yandexTrackInfo = gson.fromJson(trackInfo, YandexTrack::class.java)
-                                        Log.d(TAG, "Parsed track info: $yandexTrackInfo")
-
-                                        val trackName = yandexTrackInfo?.title
-                                        val artists = yandexTrackInfo?.artists
-                                        val artistsString = artists?.joinToString(separator = ", ") { artist -> artist.name }
-
-                                        val trackNameTextView = markerLayout.findViewById<TextView>(R.id.trackNameTextView)
-                                        val artistsTextView = markerLayout.findViewById<TextView>(R.id.artistsTextView)
-                                        trackNameTextView.text = trackName
-                                        artistsTextView.text = artistsString
-                                    }
-                                } else {
-                                    Log.e(TAG, "Failed to retrieve track info: ${response.errorBody()}")
-                                }
-                            }
-
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                Log.e(TAG, "Failed to retrieve track info: ${t.message}")
-                            }
-                        })
-                    }
-                } else {
-                    Log.e(TAG, "Failed to retrieve last tracks: ${response.errorBody()}")
-                }
-            }
-
-            override fun onFailure(call: Call<AccountInfoPrivate>, t: Throwable) {
-                Log.e(TAG, "Failed to retrieve last tracks: ${t.message}")
-            }
-        })
+        //
 
         markerLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val bitmap = Bitmap.createBitmap(

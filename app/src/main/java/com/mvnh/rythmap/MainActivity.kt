@@ -13,12 +13,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
-import com.mvnh.rythmap.SecretData.TAG
+import com.mvnh.rythmap.utils.SecretData.TAG
 import com.mvnh.rythmap.databinding.ActivityMainBinding
-import com.mvnh.rythmap.responses.ServiceGenerator
-import com.mvnh.rythmap.responses.account.AccountApi
-import com.mvnh.rythmap.responses.account.entities.AccountInfoPrivate
-import com.mvnh.rythmap.responses.yandex.entities.YandexToken
+import com.mvnh.rythmap.retrofit.ServiceGenerator
+import com.mvnh.rythmap.retrofit.account.AccountApi
+import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPrivate
+import com.mvnh.rythmap.retrofit.yandex.entities.YandexToken
+import com.mvnh.rythmap.utils.TokenManager
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthResult
@@ -58,15 +59,14 @@ class MainActivity : AppCompatActivity() {
                         gson.fromJson(result.token.toString()
                             .replace("YandexAuthToken", "")
                             .trim(), YandexToken::class.java)
+                    Log.d(TAG, "Yandexddfgdfgdfgdfgdfgfg token: ${yandexAuthToken.token}")
                     val token = yandexAuthToken.token
-
-                    Log.d(TAG, "Yandex token: $token")
 
                     val yandexTokenSharedPref = applicationContext?.getSharedPreferences(
                         "yandexToken",
                         Context.MODE_PRIVATE
                     )
-                    yandexTokenSharedPref?.edit()?.putString("yandexToken", result.token.toString())
+                    yandexTokenSharedPref?.edit()?.putString("yandexToken", token.toString())
                         ?.apply()
 
                     Toast.makeText(
