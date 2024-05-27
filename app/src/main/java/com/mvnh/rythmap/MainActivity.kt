@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                         gson.fromJson(result.token.toString()
                             .replace("YandexAuthToken", "")
                             .trim(), YandexToken::class.java)
-                    Log.d(TAG, "Yandexddfgdfgdfgdfgdfgfg token: ${yandexAuthToken.token}")
+                    Log.d(TAG, "Yandex token: ${yandexAuthToken.token}")
                     val token = yandexAuthToken.token
 
                     val yandexTokenSharedPref = applicationContext?.getSharedPreferences(

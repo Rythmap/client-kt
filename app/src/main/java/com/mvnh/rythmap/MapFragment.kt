@@ -48,7 +48,6 @@ import org.maplibre.android.plugins.annotation.SymbolOptions
 import retrofit2.Call
 import retrofit2.Callback
 import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
 class MapFragment : Fragment() {
@@ -60,9 +59,7 @@ class MapFragment : Fragment() {
     private lateinit var yandexApi: YandexApi
 
     private var nickname: String? = null
-    private lateinit var scheduledExecutor: ScheduledExecutorService
-    private lateinit var webSocketListener: WebSocketListener
-    private lateinit var webSocket: WebSocket
+
     private lateinit var locationProvider: FusedLocationProviderClient
     private var requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -106,8 +103,8 @@ class MapFragment : Fragment() {
 
         yandexApi = ServiceGenerator.createService(YandexApi::class.java)
         accountApi = ServiceGenerator.createService(AccountApi::class.java)
-        val call = accountApi.getPrivateAccountInfo(tokenManager.getToken()!!)
-        call.enqueue(object : Callback<AccountInfoPrivate> {
+        val getNicknameCall = accountApi.getPrivateAccountInfo(tokenManager.getToken()!!)
+        getNicknameCall.enqueue(object : Callback<AccountInfoPrivate> {
             override fun onResponse(
                 call: Call<AccountInfoPrivate>, response: retrofit2.Response<AccountInfoPrivate>
             ) {
@@ -132,8 +129,8 @@ class MapFragment : Fragment() {
 
         val client = OkHttpClient.Builder().readTimeout(0, TimeUnit.SECONDS).build()
         val request = Request.Builder().url("wss://${SecretData.SERVER_URL}/map").build()
-        scheduledExecutor = Executors.newSingleThreadScheduledExecutor()
-        webSocketListener = object : WebSocketListener() {
+        val scheduledExecutor = Executors.newSingleThreadScheduledExecutor()
+        val webSocketListener = object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
 
@@ -199,11 +196,11 @@ class MapFragment : Fragment() {
                                             val symbol = symbolManager.create(symbolOptions)
 
                                             symbolManager.addClickListener { symbol ->
-                                                val extendedBitmap = createExtendedMarkerBitmap(
-                                                    avatar, nickname)
-                                                style.addImage(nickname + "_extended", extendedBitmap)
-                                                symbol.iconImage = nickname + "_extended"
-                                                symbolManager.update(symbol)
+//                                                val extendedBitmap = createExtendedMarkerBitmap(
+//                                                    avatar, nickname)
+//                                                style.addImage(nickname + "_extended", extendedBitmap)
+//                                                symbol.iconImage = nickname + "_extended"
+//                                                symbolManager.update(symbol)
                                                 true
                                             }
                                             symbolManager.update(symbol)
@@ -241,7 +238,7 @@ class MapFragment : Fragment() {
                 scheduledExecutor.shutdown()
             }
         }
-        webSocket = client.newWebSocket(request, webSocketListener)
+        val webSocket = client.newWebSocket(request, webSocketListener)
 
         return binding.root
     }
@@ -279,7 +276,9 @@ class MapFragment : Fragment() {
         profilePfp.setImageBitmap(avatarBitmap)
         nicknameTextView.text = nickname
 
-        //
+        // доделать расширенный маркер (он не работает ща)
+        // доделать систему друзей (учитывая интерфейс)
+        // доделать проблему на карте со срачем маркеров на карте
 
         markerLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val bitmap = Bitmap.createBitmap(
@@ -308,23 +307,23 @@ class MapFragment : Fragment() {
         }
     }
 
-    private fun setOffline(webSocket: WebSocket) {
-        getUserLocation().addOnCompleteListener { task ->
-            if (task.isSuccessful && task.result != null) {
-                val location = task.result
-                if (nickname != null) {
-                    val message =
-                        "{\"nickname\": \"${nickname}\", \"location\": {\"lat\": ${location.latitude}, \"lng\": ${location.longitude}}, \"status\": \"online\", \"command\": \"updateStatus\"}"
-                    webSocket.send(message)
-                    Log.d(TAG, "Sent location: $message")
-                } else {
-                    Log.e(TAG, "Failed to send location: nickname is null")
-                }
-            }
-        }
-        scheduledExecutor.shutdown()
-        Log.d(TAG, "WebSocket closing")
-    }
+//    private fun setOffline(webSocket: WebSocket) {
+//        getUserLocation().addOnCompleteListener { task ->
+//            if (task.isSuccessful && task.result != null) {
+//                val location = task.result
+//                if (nickname != null) {
+//                    val message =
+//                        "{\"nickname\": \"${nickname}\", \"location\": {\"lat\": ${location.latitude}, \"lng\": ${location.longitude}}, \"status\": \"online\", \"command\": \"updateStatus\"}"
+//                    webSocket.send(message)
+//                    Log.d(TAG, "Sent location: $message")
+//                } else {
+//                    Log.e(TAG, "Failed to send location: nickname is null")
+//                }
+//            }
+//        }
+//        scheduledExecutor.shutdown()
+//        Log.d(TAG, "WebSocket closing")
+//    }
 
     override fun onStart() {
         super.onStart()
@@ -348,7 +347,7 @@ class MapFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        setOffline(webSocket)
+        // setOffline(webSocket)
         mapView.onDestroy()
     }
 

@@ -32,17 +32,9 @@ class FriendRequestsBottomSheet: BottomSheetDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
+        // TODO
+        // will be continued soon
 
-        dialog.setOnShowListener {
-            val bottomSheet =
-                dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.let {
-                val behavior = BottomSheetBehavior.from(it)
-                behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            }
-        }
-
-        return dialog
+        return super.onCreateDialog(savedInstanceState)
     }
 }
