@@ -68,7 +68,7 @@ class FriendsFragment : Fragment() {
                     val accountInfo = response.body()
                     Log.d(TAG, "Account info: $accountInfo")
                     if (accountInfo?.friends != null) {
-                        Log.d(TAG, "Friends фыа: ${accountInfo.friends}")
+                        Log.d(TAG, "Friends: ${accountInfo.friends}")
                         for (friend in accountInfo.friends) {
                             friends.addAll(retrieveFriendInfo(friend, accountInfo.friends.size))
                         }
@@ -191,6 +191,7 @@ class FriendsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         retrieveAndShowFriends(tokenManager.getToken()!!)
+        binding.searchEditText.text?.clear()
         binding.friendsContent.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
     }

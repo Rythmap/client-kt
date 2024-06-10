@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -58,8 +59,6 @@ class MapFragment : Fragment() {
     private lateinit var accountApi: AccountApi
     private lateinit var yandexApi: YandexApi
 
-    private var nickname: String? = null
-
     private lateinit var locationProvider: FusedLocationProviderClient
     private var requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -103,23 +102,6 @@ class MapFragment : Fragment() {
 
         yandexApi = ServiceGenerator.createService(YandexApi::class.java)
         accountApi = ServiceGenerator.createService(AccountApi::class.java)
-        val getNicknameCall = accountApi.getPrivateAccountInfo(tokenManager.getToken()!!)
-        getNicknameCall.enqueue(object : Callback<AccountInfoPrivate> {
-            override fun onResponse(
-                call: Call<AccountInfoPrivate>, response: retrofit2.Response<AccountInfoPrivate>
-            ) {
-                if (response.isSuccessful) {
-                    nickname = response.body()?.nickname.toString()
-                    Log.d(TAG, "Retrieved account info: ${response.body()}")
-                } else {
-                    Log.e(TAG, "Failed to retrieve account info: ${response.errorBody()}")
-                }
-            }
-
-            override fun onFailure(call: Call<AccountInfoPrivate>, t: Throwable) {
-                Log.e(TAG, "Failed to retrieve account info: ${t.message}")
-            }
-        })
 
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
@@ -142,6 +124,10 @@ class MapFragment : Fragment() {
                         getUserLocation().addOnCompleteListener { task ->
                             if (task.isSuccessful && task.result != null) {
                                 val location = task.result
+
+                                val nicknameSharedPref =
+                                    requireContext().getSharedPreferences("nickname", Context.MODE_PRIVATE)
+                                val nickname = nicknameSharedPref.getString("nickname", null)
                                 if (nickname != null) {
                                     val message =
                                         "{\"nickname\": \"${nickname}\", \"location\": {\"lat\": ${location.latitude}, \"lng\": ${location.longitude}}, \"status\": \"online\"}"
@@ -152,7 +138,7 @@ class MapFragment : Fragment() {
                                 }
                             }
                         }
-                    }, 0, 30, TimeUnit.SECONDS)
+                    }, 0, 15, TimeUnit.SECONDS)
                 } else {
                     requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
                 }
@@ -192,25 +178,30 @@ class MapFragment : Fragment() {
 
                                             style.addImage(nickname, bitmap)
 
-                                            val symbolOptions = SymbolOptions().withLatLng(LatLng(latitude, longitude)).withIconImage(nickname).withIconSize(0.75f)
+                                            val symbolOptions = SymbolOptions().withLatLng(
+                                                LatLng(
+                                                    latitude,
+                                                    longitude
+                                                )
+                                            ).withIconImage(nickname).withIconSize(0.75f)
                                             val symbol = symbolManager.create(symbolOptions)
 
-                                            symbolManager.addClickListener { symbol ->
-//                                                val extendedBitmap = createExtendedMarkerBitmap(
-//                                                    avatar, nickname)
-//                                                style.addImage(nickname + "_extended", extendedBitmap)
-//                                                symbol.iconImage = nickname + "_extended"
-//                                                symbolManager.update(symbol)
-                                                true
-                                            }
                                             symbolManager.update(symbol)
                                         } else {
-                                            Log.e(TAG, "Failed to retrieve avatar: ${response.message()}")
+                                            Log.e(
+                                                TAG,
+                                                "Failed to retrieve avatar: ${response.message()}"
+                                            )
 
                                             val bitmap = createMarkerBitmap(byteArrayOf(), nickname)
                                             style.addImage(nickname, bitmap)
 
-                                            val symbolOptions = SymbolOptions().withLatLng(LatLng(latitude, longitude)).withIconImage(nickname).withIconSize(0.75f)
+                                            val symbolOptions = SymbolOptions().withLatLng(
+                                                LatLng(
+                                                    latitude,
+                                                    longitude
+                                                )
+                                            ).withIconImage(nickname).withIconSize(0.75f)
                                             val symbol = symbolManager.create(symbolOptions)
                                             symbolManager.update(symbol)
                                         }
@@ -253,32 +244,6 @@ class MapFragment : Fragment() {
         val avatarBitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.size)
         imageView.setImageBitmap(avatarBitmap)
         textView.text = nickname
-
-        markerLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val bitmap = Bitmap.createBitmap(
-            markerLayout.measuredWidth, markerLayout.measuredHeight, Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        markerLayout.layout(0, 0, markerLayout.measuredWidth, markerLayout.measuredHeight)
-        markerLayout.draw(canvas)
-
-        return bitmap
-    }
-
-    private fun createExtendedMarkerBitmap(avatar: ByteArray, nickname: String): Bitmap {
-        val markerLayout =
-            LayoutInflater.from(requireContext()).inflate(R.layout.extended_marker, null)
-
-        val profilePfp = markerLayout.findViewById<ShapeableImageView>(R.id.profilePfp)
-        val nicknameTextView = markerLayout.findViewById<TextView>(R.id.nicknameTextView)
-
-        val avatarBitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.size)
-        profilePfp.setImageBitmap(avatarBitmap)
-        nicknameTextView.text = nickname
-
-        // доделать расширенный маркер (он не работает ща)
-        // доделать систему друзей (учитывая интерфейс)
-        // доделать проблему на карте со срачем маркеров на карте
 
         markerLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val bitmap = Bitmap.createBitmap(

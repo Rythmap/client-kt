@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.mvnh.rythmap.utils.SecretData.TAG
 
 class TokenManager(context: Context) {
 
@@ -26,7 +27,7 @@ class TokenManager(context: Context) {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     } catch (e: Exception) {
-        Log.d("Rythmap", e.toString())
+        Log.d(TAG, e.toString())
         context.getSharedPreferences(ENCRYPTED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
     }
 

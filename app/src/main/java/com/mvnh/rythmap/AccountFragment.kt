@@ -253,118 +253,47 @@ class AccountFragment : Fragment() {
             return
         }
 
-        val call = accountApi.getMedia(nickname, type)
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    try {
-                        val mediaBytes = response.body()?.bytes()
-                        val bitmap =
-                            BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes?.size ?: 0)
-                        if (type == "avatar") {
-                            binding.profilePfp.setImageBitmap(bitmap)
-                        } else {
-                            binding.profileBanner.setImageBitmap(bitmap)
-                        }
+        if (type == "avatar") {
+            binding.profilePfp.load("https://melomap.fun/account/info/media/avatar?nickname=$nickname")
+        } else {
+            binding.profileBanner.load("https://melomap.fun/account/info/media/banner?nickname=$nickname")
+        }
 
-                        retrieveMediaCallsCompleted++
-                        if (retrieveMediaCallsCompleted == 2) {
-                            val transition = Fade()
-                            transition.duration = 200
-                            transition.addTarget(binding.accountContent)
-                            TransitionManager.beginDelayedTransition(binding.root, transition)
+        retrieveMediaCallsCompleted++
+        if (retrieveMediaCallsCompleted == 2) {
+            val transition = Fade()
+            transition.duration = 200
+            transition.addTarget(binding.accountContent)
+            TransitionManager.beginDelayedTransition(binding.root, transition)
 
-                            binding.progressBar.visibility = View.GONE
-                            binding.accountContent.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.GONE
+            binding.accountContent.visibility = View.VISIBLE
 
-                            retrieveMediaCallsCompleted = 0
-                        }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Failed to decode media", e)
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.failed_to_decode_media),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                } else {
-                    Log.e(TAG, "Failed to retrieve media: ${response.errorBody()?.string()}")
-
-                    retrieveMediaCallsCompleted++
-                    if (retrieveMediaCallsCompleted == 2) {
-                        val transition = Fade()
-                        transition.duration = 200
-                        transition.addTarget(binding.accountContent)
-                        TransitionManager.beginDelayedTransition(binding.root, transition)
-
-                        binding.progressBar.visibility = View.GONE
-                        binding.accountContent.visibility = View.VISIBLE
-
-                        retrieveMediaCallsCompleted = 0
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e(TAG, "Failed to retrieve media", t)
-
-                retrieveMediaCallsCompleted++
-                if (retrieveMediaCallsCompleted == 2) {
-                    val transition = Fade()
-                    transition.duration = 200
-                    transition.addTarget(binding.accountContent)
-                    TransitionManager.beginDelayedTransition(binding.root, transition)
-
-                    binding.progressBar.visibility = View.GONE
-                    binding.accountContent.visibility = View.VISIBLE
-
-                    retrieveMediaCallsCompleted = 0
-                }
-            }
-        })
+            retrieveMediaCallsCompleted = 0
+        }
     }
 
     private fun retrieveLastTrack(rythmapToken: String, yandexToken: String) {
         val yandexApi = ServiceGenerator.createService(YandexApi::class.java)
         val call = yandexApi.getAndSaveCurrent(rythmapToken, yandexToken)
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+        call.enqueue(object : Callback<YandexTrack> {
+            override fun onResponse(call: Call<YandexTrack>, response: Response<YandexTrack>) {
                 if (response.isSuccessful) {
-                    val getTrackInfo = yandexApi.getTrackInfo(response.body()?.string()!!)
-                    getTrackInfo.enqueue(object : Callback<ResponseBody> {
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            if (response.isSuccessful) {
-                                val trackInfo = Gson().fromJson(
-                                    response.body()?.string(),
-                                    YandexTrack::class.java
-                                )
-                                Log.d(TAG, "Current track: $trackInfo")
+                    val body = response.body()
 
-                                if (isAdded && activity != null) {
-                                    binding.trackNameTextView.text = trackInfo.title
-                                    binding.artistNameTextView.text = trackInfo.artists.joinToString(", ") { it.name }
-                                    Log.d(TAG, "Track image: ${trackInfo.image.replace("%%", "1000x1000")}")
-                                    binding.trackImageView.load(trackInfo.image.replace("%%", "1000x1000"))
-                                }
-                            } else {
-                                Log.e(TAG, "Failed to retrieve current track info: ${response.message()}")
-                            }
-                        }
+                    if (body != null) {
+                        Log.d(TAG, "Last track: $body")
 
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            Log.e(TAG, "Failed to retrieve current track info", t)
-                        }
-                    })
-                } else {
-                    Log.e(TAG, "Failed to retrieve and save current track: ${response.raw()}")
+                        binding.trackNameTextView.text = body.title
+                        binding.artistNameTextView.text = body.artist
+
+                        binding.trackImageView.load(body.img)
+                    }
                 }
             }
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e(TAG, "Failed to retrieve and save current track", t)
+            override fun onFailure(call: Call<YandexTrack>, t: Throwable) {
+
             }
         })
     }

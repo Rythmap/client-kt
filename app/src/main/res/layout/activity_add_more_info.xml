@@ -14,9 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:fontFamily="@font/inter_semibold"
+        android:gravity="center"
         android:text="@string/add_more_info"
         android:textSize="32sp"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,9 +26,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_medium"
+        android:gravity="center"
         android:text="@string/about_you"
         android:textSize="16sp"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="@+id/addMoreInfoLabel"
         app:layout_constraintStart_toStartOf="@+id/addMoreInfoLabel"
         app:layout_constraintTop_toBottomOf="@+id/addMoreInfoLabel" />
@@ -38,34 +38,34 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="25dp"
+        android:padding="4dp"
         android:scaleType="centerCrop"
         android:src="?attr/colorSecondaryContainer"
-        app:layout_constraintBottom_toBottomOf="@+id/profilePfp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/profilePfp"
+        app:layout_constraintTop_toBottomOf="@+id/aboutYouLabel"
         app:shapeAppearanceOverlay="@style/roundedImageView25"
         app:strokeColor="?attr/colorSecondary"
-        app:strokeWidth="8dp"
-        android:padding="4dp"/>
+        app:strokeWidth="8dp" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profilePfp"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="25dp"
-        android:padding="4dp"
+        android:layout_marginTop="60dp"
         android:background="?attr/colorSurface"
+        android:padding="4dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/photo_camera_icon"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aboutYouLabel"
+        app:layout_constraintTop_toTopOf="@+id/profileBanner"
         app:shapeAppearanceOverlay="@style/roundedImageView25"
         app:strokeColor="?attr/colorPrimary"
-        app:strokeWidth="8dp"
-        android:scaleType="centerCrop" />
+        app:strokeWidth="8dp" />
 
     <LinearLayout
         android:id="@+id/visibleNameLayout"
@@ -75,7 +75,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileBanner">
+        app:layout_constraintTop_toBottomOf="@+id/profilePfp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/nameInputLayout"
@@ -145,9 +145,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@id/aboutInputLayout"
         app:layout_constraintStart_toStartOf="@+id/aboutInputLayout"
-        app:layout_constraintTop_toBottomOf="@id/aboutInputLayout"
-        app:layout_constraintEnd_toEndOf="@id/aboutInputLayout">
+        app:layout_constraintTop_toBottomOf="@id/aboutInputLayout">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/musicPreferencesLayout"
@@ -162,9 +162,9 @@
                 android:id="@+id/musicPreferencesDropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:dropDownWidth="match_parent"
                 android:hint="@string/music_prefs"
-                android:inputType="none"
-                android:dropDownWidth="match_parent"/>
+                android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -180,9 +180,9 @@
                 android:id="@+id/otherPreferencesDropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:dropDownWidth="match_parent"
                 android:hint="@string/other_prefs"
-                android:inputType="none"
-                android:dropDownWidth="match_parent">
+                android:inputType="none">
 
             </MultiAutoCompleteTextView>
         </com.google.android.material.textfield.TextInputLayout>

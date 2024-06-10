@@ -49,7 +49,6 @@
     <string name="friend_requests">Friend requests</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
-    <string name="listen">Listen</string>
 
     <string-array name="music_preferences">
         <item>Rap</item>

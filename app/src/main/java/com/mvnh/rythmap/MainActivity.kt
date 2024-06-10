@@ -181,6 +181,14 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "Account ID: ${response.body()?.accountId}")
                         accountIdSharedPref?.edit()?.putString("accountId", response.body()?.accountId)
                             ?.apply()
+
+                        val nicknameSharedPref = applicationContext?.getSharedPreferences(
+                            "nickname",
+                            Context.MODE_PRIVATE
+                        )
+                        Log.d(TAG, "Nickname: ${response.body()?.nickname}")
+                        nicknameSharedPref?.edit()?.putString("nickname", response.body()?.nickname)
+                            ?.apply()
                     } else {
                         Log.d(
                             TAG,

@@ -39,7 +39,7 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
     private lateinit var binding: EditProfileBottomSheetBinding
     private lateinit var tokenManager: TokenManager
     private lateinit var accountApi: AccountApi
-    val editProfileSheetVM: EditProfileSheetVM by activityViewModels()
+    private val editProfileSheetVM: EditProfileSheetVM by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

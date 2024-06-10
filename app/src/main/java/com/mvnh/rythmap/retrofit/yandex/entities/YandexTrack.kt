@@ -1,11 +1,15 @@
 package com.mvnh.rythmap.retrofit.yandex.entities
 
-data class YandexTrack(
-    val title: String,
-    val artists: List<Artist>,
-    val image: String,
-)
+import com.google.gson.annotations.SerializedName
 
-data class Artist(
-    val name: String
+data class YandexTrack(
+    @SerializedName("track_id") val trackId: String,
+    val title: String,
+    val artist: String,
+    val img: String,
+    val duration: Int,
+    val minutes: Int,
+    val seconds: Int,
+    val album: String,
+    @SerializedName("download_link") val downloadLink: String,
 )

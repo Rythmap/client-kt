@@ -21,8 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorOnSurfaceInverse"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="-35dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/profileBanner"
@@ -181,7 +183,7 @@
 
         </com.google.android.material.imageview.ShapeableImageView>
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/lastTrackCardView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -190,37 +192,51 @@
             app:cardCornerRadius="25dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileInfoCardView" >
+            app:layout_constraintTop_toBottomOf="@+id/profileInfoCardView">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/lastTrackContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <TextView
+                    android:id="@+id/lastTrackLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Last track"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/trackImageView"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_marginStart="25dp"
-                    android:padding="4dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="25dp"
+                    android:padding="3dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lastTrackLabel"
                     app:shapeAppearanceOverlay="@style/roundedImageView25"
                     app:strokeColor="?attr/colorPrimary"
-                    app:strokeWidth="8dp" />
+                    app:strokeWidth="6dp" />
 
                 <TextView
                     android:id="@+id/trackNameTextView"
                     android:layout_width="175dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="15dp"
                     android:fontFamily="@font/inter_semibold"
                     android:text="Track name"
                     android:textSize="20sp"
                     app:layout_constraintStart_toEndOf="@+id/trackImageView"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/lastTrackLabel" />
 
                 <TextView
                     android:id="@+id/artistNameTextView"
@@ -241,13 +257,13 @@
                     android:layout_marginBottom="25dp"
                     android:backgroundTint="?attr/colorSecondaryContainer"
                     android:fontFamily="@font/inter_medium"
-                    android:text="@string/listen"
+                    android:text="asefd"
                     android:textColor="?attr/colorSecondary"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -33,7 +33,6 @@ class FriendRequestsBottomSheet: BottomSheetDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // TODO
-        // will be continued soon
 
         return super.onCreateDialog(savedInstanceState)
     }
