@@ -220,12 +220,6 @@ class AccountFragment : Fragment() {
 
                         retrieveMedia(accountInfo?.nickname ?: "", "avatar")
                         retrieveMedia(accountInfo?.nickname ?: "", "banner")
-
-                        val yandexTokenSharedPref = requireContext().getSharedPreferences("yandexToken", Context.MODE_PRIVATE)
-                        if (yandexTokenSharedPref.getString("yandexToken", null) != null) {
-                            Log.d(TAG, "Retrieving last track")
-                            retrieveLastTrack(tokenManager.getToken()!!, yandexTokenSharedPref.getString("yandexToken", null)!!)
-                        }
                     }
                 } else {
                     Log.e(TAG, "Failed to retrieve account info: ${response.errorBody()?.string()}")
@@ -261,15 +255,12 @@ class AccountFragment : Fragment() {
 
         retrieveMediaCallsCompleted++
         if (retrieveMediaCallsCompleted == 2) {
-            val transition = Fade()
-            transition.duration = 200
-            transition.addTarget(binding.accountContent)
-            TransitionManager.beginDelayedTransition(binding.root, transition)
-
-            binding.progressBar.visibility = View.GONE
-            binding.accountContent.visibility = View.VISIBLE
-
             retrieveMediaCallsCompleted = 0
+            val yandexTokenSharedPref = requireContext().getSharedPreferences("yandexToken", Context.MODE_PRIVATE)
+            if (yandexTokenSharedPref.getString("yandexToken", null) != null) {
+                Log.d(TAG, "Retrieving last track")
+                retrieveLastTrack(tokenManager.getToken()!!, yandexTokenSharedPref.getString("yandexToken", null)!!)
+            }
         }
     }
 
@@ -288,6 +279,14 @@ class AccountFragment : Fragment() {
                         binding.artistNameTextView.text = body.artist
 
                         binding.trackImageView.load(body.img)
+
+                        val transition = Fade()
+                        transition.duration = 200
+                        transition.addTarget(binding.accountContent)
+                        TransitionManager.beginDelayedTransition(binding.root, transition)
+
+                        binding.progressBar.visibility = View.GONE
+                        binding.accountContent.visibility = View.VISIBLE
                     }
                 }
             }

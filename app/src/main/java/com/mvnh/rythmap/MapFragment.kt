@@ -130,7 +130,7 @@ class MapFragment : Fragment() {
                                 val nickname = nicknameSharedPref.getString("nickname", null)
                                 if (nickname != null) {
                                     val message =
-                                        "{\"nickname\": \"${nickname}\", \"location\": {\"lat\": ${location.latitude}, \"lng\": ${location.longitude}}, \"status\": \"online\"}"
+                                        "{\"nickname\": \"${nickname}\", \"location\": {\"lat\": ${location.latitude}, \"lng\": ${location.longitude}}, \"status\": \"online\"}, \"token\": \"${tokenManager.getToken()}\"}"
                                     webSocket.send(message)
                                     Log.d(TAG, "Sent location: $message")
                                 } else {
