@@ -2,21 +2,20 @@ package com.mvnh.rythmap
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
-import com.mvnh.rythmap.utils.SecretData.TAG
+import androidx.fragment.app.Fragment
 import com.mvnh.rythmap.databinding.FragmentFriendsBinding
 import com.mvnh.rythmap.recycler.MessengerRecyclerAdapter
 import com.mvnh.rythmap.retrofit.ServiceGenerator
 import com.mvnh.rythmap.retrofit.account.AccountApi
-import com.mvnh.rythmap.retrofit.account.entities.AccountInfoBasic
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPrivate
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPublic
 import com.mvnh.rythmap.retrofit.account.entities.AccountVisibleName
+import com.mvnh.rythmap.utils.SecretData.TAG
 import com.mvnh.rythmap.utils.TokenManager
 import retrofit2.Call
 import retrofit2.Callback

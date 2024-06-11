@@ -1,10 +1,7 @@
 package com.mvnh.rythmap
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
@@ -15,16 +12,10 @@ import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import coil.Coil
 import coil.load
-import coil.request.CachePolicy
-import coil.request.ErrorResult
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.mvnh.rythmap.databinding.FragmentAccountBinding
 import com.mvnh.rythmap.retrofit.ServiceGenerator
 import com.mvnh.rythmap.retrofit.account.AccountApi
-import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPrivate
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPublic
 import com.mvnh.rythmap.utils.SecretData.SERVER_URL
 import com.mvnh.rythmap.utils.SecretData.TAG

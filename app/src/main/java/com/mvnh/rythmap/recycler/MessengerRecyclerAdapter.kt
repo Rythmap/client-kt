@@ -1,7 +1,6 @@
 package com.mvnh.rythmap.recycler
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,14 +15,13 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.mvnh.rythmap.AccountFragment
 import com.mvnh.rythmap.MainActivity
 import com.mvnh.rythmap.R
-import com.mvnh.rythmap.utils.SecretData.TAG
-import com.mvnh.rythmap.utils.TokenManager
 import com.mvnh.rythmap.retrofit.ServiceGenerator
 import com.mvnh.rythmap.retrofit.account.AccountApi
-import com.mvnh.rythmap.retrofit.account.entities.AccountInfoBasic
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPublic
 import com.mvnh.rythmap.retrofit.account.entities.SendFriendRequest
 import com.mvnh.rythmap.utils.SecretData.SERVER_URL
+import com.mvnh.rythmap.utils.SecretData.TAG
+import com.mvnh.rythmap.utils.TokenManager
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback

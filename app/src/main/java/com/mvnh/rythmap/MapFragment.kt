@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.location.Location
 import android.os.Bundle
@@ -13,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -26,21 +24,19 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.mvnh.rythmap.utils.SecretData.TAG
 import com.mvnh.rythmap.databinding.FragmentMapBinding
 import com.mvnh.rythmap.retrofit.ServiceGenerator
 import com.mvnh.rythmap.retrofit.account.AccountApi
-import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPrivate
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPublic
 import com.mvnh.rythmap.retrofit.map.MapWSResponse
 import com.mvnh.rythmap.retrofit.yandex.YandexApi
 import com.mvnh.rythmap.utils.SecretData
 import com.mvnh.rythmap.utils.SecretData.SERVER_URL
+import com.mvnh.rythmap.utils.SecretData.TAG
 import com.mvnh.rythmap.utils.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.ResponseBody
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.maplibre.android.MapLibre
@@ -51,7 +47,6 @@ import org.maplibre.android.plugins.annotation.SymbolManager
 import org.maplibre.android.plugins.annotation.SymbolOptions
 import retrofit2.Call
 import retrofit2.Callback
-import java.io.IOException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
