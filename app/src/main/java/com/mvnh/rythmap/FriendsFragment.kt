@@ -52,11 +52,11 @@ class FriendsFragment : Fragment() {
         return binding.root
     }
 
-    private fun retrieveAndShowFriends(token: String): List<AccountInfoBasic> {
+    private fun retrieveAndShowFriends(token: String): List<AccountInfoPublic> {
         binding.friendsContent.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
 
-        val friends = mutableListOf<AccountInfoBasic>()
+        val friends = mutableListOf<AccountInfoPublic>()
 
         val call = accountApi.getPrivateAccountInfo(token)
         call.enqueue(object : Callback<AccountInfoPrivate> {
@@ -88,8 +88,8 @@ class FriendsFragment : Fragment() {
         return friends
     }
 
-    private fun retrieveFriendInfo(friend: String, friendsAmount: Int): List<AccountInfoBasic> {
-        val friends = mutableListOf<AccountInfoBasic>()
+    private fun retrieveFriendInfo(friend: String, friendsAmount: Int): List<AccountInfoPublic> {
+        val friends = mutableListOf<AccountInfoPublic>()
 
         val call = accountApi.getPublicAccountInfo(friend)
         call.enqueue(object : Callback<AccountInfoPublic> {
@@ -113,8 +113,13 @@ class FriendsFragment : Fragment() {
                         if (visibleName.name == null) {
                             visibleName.name = accountInfo.nickname
                         }
-                        val nickname = accountInfo.nickname
-                        val friendInfo = AccountInfoBasic(accountInfo.accountId, nickname, visibleName, accountInfo.createdAt)
+                        val friendInfo = AccountInfoPublic(
+                            accountId = accountInfo.accountId,
+                            nickname = accountInfo.nickname,
+                            visibleName = visibleName,
+                            avatar = accountInfo.avatar,
+                            createdAt = accountInfo.createdAt
+                        )
 
                         friends.add(friendInfo)
                         activity?.runOnUiThread {
@@ -149,22 +154,23 @@ class FriendsFragment : Fragment() {
 
     private fun searchFriends(query: String) {
         val call = accountApi.searchFriends(query)
-        call.enqueue(object : Callback<Map<String, AccountInfoBasic>> {
+        call.enqueue(object : Callback<Map<String, AccountInfoPublic>> {
             override fun onResponse(
-                call: Call<Map<String, AccountInfoBasic>>,
-                response: Response<Map<String, AccountInfoBasic>>
+                call: Call<Map<String, AccountInfoPublic>>,
+                response: Response<Map<String, AccountInfoPublic>>
             ) {
                 if (response.isSuccessful) {
                     val friendsResponse = response.body()
                     Log.d(TAG, "Friends found: $friendsResponse")
 
-                    val friends = mutableListOf<AccountInfoBasic>()
+                    val friends = mutableListOf<AccountInfoPublic>()
                     friendsResponse?.forEach { (nickname, accountInfo) ->
-                        val friend = AccountInfoBasic(
-                            accountInfo.accountId,
-                            nickname,
-                            accountInfo.visibleName,
-                            accountInfo.createdAt
+                        val friend = AccountInfoPublic(
+                            accountId = accountInfo.accountId,
+                            nickname = accountInfo.nickname,
+                            visibleName = accountInfo.visibleName,
+                            avatar = accountInfo.avatar,
+                            createdAt = accountInfo.createdAt
                         )
                         friends.add(friend)
 
@@ -177,11 +183,10 @@ class FriendsFragment : Fragment() {
                     }
                 } else {
                     Log.d(TAG, "Failed to search friends: ${response.message()}")
-                    Toast.makeText(context, "Failed to search friends", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<Map<String, AccountInfoBasic>>, t: Throwable) {
+            override fun onFailure(call: Call<Map<String, AccountInfoPublic>>, t: Throwable) {
                 Log.d(TAG, "Failed to search friends: ${t.message}")
                 Toast.makeText(context, "Failed to search friends", Toast.LENGTH_SHORT).show()
             }

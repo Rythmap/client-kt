@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import coil.load
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -30,9 +31,11 @@ import com.mvnh.rythmap.databinding.FragmentMapBinding
 import com.mvnh.rythmap.retrofit.ServiceGenerator
 import com.mvnh.rythmap.retrofit.account.AccountApi
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPrivate
+import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPublic
 import com.mvnh.rythmap.retrofit.map.MapWSResponse
 import com.mvnh.rythmap.retrofit.yandex.YandexApi
 import com.mvnh.rythmap.utils.SecretData
+import com.mvnh.rythmap.utils.SecretData.SERVER_URL
 import com.mvnh.rythmap.utils.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -48,6 +51,7 @@ import org.maplibre.android.plugins.annotation.SymbolManager
 import org.maplibre.android.plugins.annotation.SymbolOptions
 import retrofit2.Call
 import retrofit2.Callback
+import java.io.IOException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -116,105 +120,105 @@ class MapFragment : Fragment() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
 
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    scheduledExecutor.scheduleWithFixedDelay({
-                        getUserLocation().addOnCompleteListener { task ->
-                            if (task.isSuccessful && task.result != null) {
-                                val location = task.result
+                if (isAdded && activity != null) {
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        scheduledExecutor.scheduleWithFixedDelay({
+                            getUserLocation().addOnCompleteListener { task ->
+                                if (task.isSuccessful && task.result != null) {
+                                    val location = task.result
 
-                                val nicknameSharedPref =
-                                    requireContext().getSharedPreferences("nickname", Context.MODE_PRIVATE)
-                                val nickname = nicknameSharedPref.getString("nickname", null)
-                                if (nickname != null) {
-                                    val message =
-                                        "{\"nickname\": \"${nickname}\", \"location\": {\"lat\": ${location.latitude}, \"lng\": ${location.longitude}}, \"status\": \"online\"}, \"token\": \"${tokenManager.getToken()}\"}"
-                                    webSocket.send(message)
-                                    Log.d(TAG, "Sent location: $message")
-                                } else {
-                                    Log.e(TAG, "Failed to send location: nickname is null")
+                                    val nicknameSharedPref =
+                                        requireContext().getSharedPreferences(
+                                            "nickname",
+                                            Context.MODE_PRIVATE
+                                        )
+                                    val nickname = nicknameSharedPref.getString("nickname", null)
+                                    if (nickname != null) {
+                                        val message =
+                                            "{\"nickname\": \"${nickname}\", \"location\": {\"lat\": ${location.latitude}, \"lng\": ${location.longitude}}, \"status\": \"online\", \"token\": \"${tokenManager.getToken()}\"}"
+                                        webSocket.send(message)
+                                        Log.d(TAG, "Sent location: $message")
+                                    } else {
+                                        Log.e(TAG, "Failed to send location: nickname is null")
+                                    }
                                 }
                             }
-                        }
-                    }, 0, 15, TimeUnit.SECONDS)
-                } else {
-                    requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        }, 0, 15, TimeUnit.SECONDS)
+                    } else {
+                        requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    }
                 }
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
 
-                activity?.runOnUiThread {
-                    mapView.getMapAsync { map ->
-                        map.setStyle(styleUrl) { style ->
-                            val gson = Gson()
-                            val type = object : TypeToken<List<MapWSResponse>>() {}.type
-                            val jsons = gson.fromJson<List<MapWSResponse>>(text, type)
-                            Log.d(TAG, "Received JSONs: $jsons")
+                if (isAdded && activity != null)
+                    activity?.runOnUiThread {
+                        mapView.getMapAsync { map ->
+                            map.setStyle(styleUrl) { style ->
+                                val gson = Gson()
+                                val type = object : TypeToken<List<MapWSResponse>>() {}.type
+                                val jsons = gson.fromJson<List<MapWSResponse>>(text, type)
+                                Log.d(TAG, "Received JSONs: $jsons")
 
-                            val symbolManager = SymbolManager(mapView, map, style)
-                            symbolManager.iconAllowOverlap = true
-                            symbolManager.iconIgnorePlacement = true
+                                val symbolManager = SymbolManager(mapView, map, style)
+                                symbolManager.iconAllowOverlap = true
+                                symbolManager.iconIgnorePlacement = true
 
-                            for (json in jsons) {
-                                val nickname = json.nickname
-                                val latitude = json.location.lat
-                                val longitude = json.location.lng
+                                for (json in jsons) {
+                                    val nickname = json.nickname
+                                    val latitude = json.location.lat
+                                    val longitude = json.location.lng
 
-                                val getAvatarCall = accountApi.getMedia(nickname, "avatar")
-                                getAvatarCall.enqueue(object : Callback<ResponseBody> {
-                                    override fun onResponse(
-                                        call: Call<ResponseBody>,
-                                        response: retrofit2.Response<ResponseBody>
-                                    ) {
-                                        if (response.isSuccessful) {
-                                            Log.d(TAG, "Retrieved avatar for nickname: $nickname")
-                                            val avatar = response.body()?.bytes()
-                                            var bitmap: Bitmap? = null
-                                            bitmap = createMarkerBitmap(avatar!!, nickname)
+                                    val call = accountApi.getPublicAccountInfo(nickname)
+                                    call.enqueue(object : Callback<AccountInfoPublic> {
+                                        override fun onResponse(
+                                            call: Call<AccountInfoPublic>,
+                                            response: retrofit2.Response<AccountInfoPublic>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                val accountInfo = response.body()
+                                                if (accountInfo != null) {
+                                                    style.addImage(
+                                                        nickname,
+                                                        createMarkerBitmap(accountInfo)
+                                                    )
 
-                                            style.addImage(nickname, bitmap)
-
-                                            val symbolOptions = SymbolOptions().withLatLng(
-                                                LatLng(
-                                                    latitude,
-                                                    longitude
+                                                    val symbolOptions = SymbolOptions().withLatLng(
+                                                        LatLng(
+                                                            latitude,
+                                                            longitude
+                                                        )
+                                                    ).withIconImage(nickname).withIconSize(0.75f)
+                                                    val symbol = symbolManager.create(symbolOptions)
+                                                    symbolManager.update(symbol)
+                                                }
+                                            } else {
+                                                Log.e(
+                                                    TAG,
+                                                    "Failed to retrieve account info: ${response.message()}"
                                                 )
-                                            ).withIconImage(nickname).withIconSize(0.75f)
-                                            val symbol = symbolManager.create(symbolOptions)
+                                            }
+                                        }
 
-                                            symbolManager.update(symbol)
-                                        } else {
+                                        override fun onFailure(
+                                            call: Call<AccountInfoPublic>,
+                                            t: Throwable
+                                        ) {
                                             Log.e(
                                                 TAG,
-                                                "Failed to retrieve avatar: ${response.message()}"
+                                                "Failed to retrieve account info: ${t.message}"
                                             )
-
-                                            val bitmap = createMarkerBitmap(byteArrayOf(), nickname)
-                                            style.addImage(nickname, bitmap)
-
-                                            val symbolOptions = SymbolOptions().withLatLng(
-                                                LatLng(
-                                                    latitude,
-                                                    longitude
-                                                )
-                                            ).withIconImage(nickname).withIconSize(0.75f)
-                                            val symbol = symbolManager.create(symbolOptions)
-                                            symbolManager.update(symbol)
                                         }
-                                    }
-
-                                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                        Log.e(TAG, "Failed to retrieve avatar: ${t.message}")
-                                    }
-                                })
+                                    })
+                                }
                             }
                         }
                     }
-                }
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
@@ -234,16 +238,38 @@ class MapFragment : Fragment() {
         return binding.root
     }
 
-    private fun createMarkerBitmap(avatar: ByteArray, nickname: String): Bitmap {
+    private fun createMarkerBitmap(body: AccountInfoPublic): Bitmap {
+        Log.d(TAG, "Body: $body")
+
         val markerLayout =
             LayoutInflater.from(requireContext()).inflate(R.layout.default_marker, null)
 
-        val imageView = markerLayout.findViewById<ShapeableImageView>(R.id.profilePfp)
         val textView = markerLayout.findViewById<TextView>(R.id.nicknameTextView)
+        textView.text = body.nickname
 
-        val avatarBitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.size)
-        imageView.setImageBitmap(avatarBitmap)
-        textView.text = nickname
+        val imageView = markerLayout.findViewById<ShapeableImageView>(R.id.profilePfp)
+        if (body.avatar != null) {
+            val call = accountApi.getMedia("avatar", body.avatar)
+            call.enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: retrofit2.Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "Retrieved avatar: ${response.body()}")
+                        val avatar = response.body()?.bytes()
+                        val avatarBitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar!!.size)
+                        imageView.setImageBitmap(avatarBitmap)
+                    } else {
+                        Log.e(TAG, "Failed to retrieve avatar: ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.e(TAG, "Failed to retrieve avatar: ${t.message}")
+                }
+            })
+        }
 
         markerLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val bitmap = Bitmap.createBitmap(

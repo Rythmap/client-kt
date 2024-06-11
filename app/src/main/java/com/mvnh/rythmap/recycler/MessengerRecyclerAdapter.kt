@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.google.android.material.imageview.ShapeableImageView
 import com.mvnh.rythmap.AccountFragment
 import com.mvnh.rythmap.MainActivity
@@ -20,13 +21,15 @@ import com.mvnh.rythmap.utils.TokenManager
 import com.mvnh.rythmap.retrofit.ServiceGenerator
 import com.mvnh.rythmap.retrofit.account.AccountApi
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoBasic
+import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPublic
 import com.mvnh.rythmap.retrofit.account.entities.SendFriendRequest
+import com.mvnh.rythmap.utils.SecretData.SERVER_URL
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MessengerRecyclerAdapter(private var friends: List<AccountInfoBasic>, private val context: Context) :
+class MessengerRecyclerAdapter(private var friends: List<AccountInfoPublic>, private val context: Context) :
     RecyclerView.Adapter<MessengerRecyclerAdapter.FriendViewHolder>() {
 
     class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -66,7 +69,7 @@ class MessengerRecyclerAdapter(private var friends: List<AccountInfoBasic>, priv
 
         holder.nicknameTextView.text = currentItem.nickname
 
-        retrieveMedia(currentItem.nickname, "avatar", holder.profilePfp)
+        holder.profilePfp.load("https://$SERVER_URL/account/info/media/avatar?id=${currentItem.avatar}")
 
         val accountId = context.getSharedPreferences("accountId", Context.MODE_PRIVATE).getString("accountId", null)
         if (currentItem.accountId == accountId) {
@@ -111,36 +114,8 @@ class MessengerRecyclerAdapter(private var friends: List<AccountInfoBasic>, priv
         }
     }
 
-    fun setFriends(newFriends: List<AccountInfoBasic>) {
+    fun setFriends(newFriends: List<AccountInfoPublic>) {
         friends = newFriends.toMutableList()
         notifyDataSetChanged()
-    }
-
-    private var retrieveMediaCallsCompleted = 0
-    private fun retrieveMedia(nickname: String, type: String, imageView: ShapeableImageView) {
-        Log.d(TAG, "Retrieving media for $nickname")
-
-        val accountApi = ServiceGenerator.createService(AccountApi::class.java)
-        val call = accountApi.getMedia(nickname, type)
-        call.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    Log.d(TAG, "Media retrieved successfully")
-                    try {
-                        val mediaBytes = response.body()?.bytes()
-                        val bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes?.size ?: 0)
-                        imageView.setImageBitmap(bitmap)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Failed to decode media", e)
-                    }
-                } else {
-                    Log.e(TAG, "Failed to retrieve media: ${response.errorBody()?.string()}")
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e(TAG, "Failed to retrieve media", t)
-            }
-        })
     }
 }

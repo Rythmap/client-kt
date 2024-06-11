@@ -27,8 +27,8 @@ interface AccountApi {
 
     @GET("account/info/media/{type}")
     fun getMedia(
-        @Query("nickname") nickname: String,
-        @Query("type") type: String
+        @Query("type") type: String,
+        @Query("id") id: String
     ): Call<ResponseBody>
 
     @DELETE("account/delete")
@@ -89,5 +89,5 @@ interface AccountApi {
     @GET("friends/search")
     fun searchFriends(
         @Query("nickname") nickname: String
-    ): Call<Map<String, AccountInfoBasic>>
+    ): Call<Map<String, AccountInfoPublic>>
 }

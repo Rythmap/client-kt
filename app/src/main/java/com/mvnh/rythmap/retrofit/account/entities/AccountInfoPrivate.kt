@@ -8,6 +8,8 @@ data class AccountInfoPrivate(
     @SerializedName("nickname") val nickname: String,
     @SerializedName("visible_name") val visibleName: AccountVisibleName? = null,
     val about: String? = null,
+    val avatar: String? = null,
+    val banner: String? = null,
     val email: String,
     @SerializedName("music_preferences") val musicPreferences: List<String>? = null,
     @SerializedName("other_preferences") val otherPreferences: List<String>? = null,

@@ -2,8 +2,9 @@ package com.mvnh.rythmap
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
@@ -14,19 +15,21 @@ import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import coil.Coil
 import coil.load
-import com.google.gson.Gson
-import com.mvnh.rythmap.utils.SecretData.TAG
+import coil.request.CachePolicy
+import coil.request.ErrorResult
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.mvnh.rythmap.databinding.FragmentAccountBinding
 import com.mvnh.rythmap.retrofit.ServiceGenerator
 import com.mvnh.rythmap.retrofit.account.AccountApi
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPrivate
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPublic
-import com.mvnh.rythmap.retrofit.yandex.YandexApi
-import com.mvnh.rythmap.retrofit.yandex.entities.YandexTrack
+import com.mvnh.rythmap.utils.SecretData.SERVER_URL
+import com.mvnh.rythmap.utils.SecretData.TAG
 import com.mvnh.rythmap.utils.TokenManager
 import com.mvnh.rythmap.vm.EditProfileSheetVM
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,72 +51,27 @@ class AccountFragment : Fragment() {
         tokenManager = TokenManager(requireContext())
         accountApi = ServiceGenerator.createService(AccountApi::class.java)
 
+        val nicknameSharedPref = requireContext().getSharedPreferences(
+            "nickname",
+            Context.MODE_PRIVATE
+        )
+
         if (arguments != null) {
             binding.editProfileButton.visibility = View.GONE
             binding.accountContent.visibility = View.GONE
             binding.progressBar.visibility = View.VISIBLE
 
             val nickname = arguments?.getString("nickname")
-            val call = accountApi.getPublicAccountInfo(nickname!!)
-            call.enqueue(object : Callback<AccountInfoPublic> {
-                override fun onResponse(
-                    call: Call<AccountInfoPublic>,
-                    response: Response<AccountInfoPublic>
-                ) {
-                    if (response.isSuccessful) {
-                        val accountInfo = response.body()
-                        Log.d(TAG, "Account info: $accountInfo")
-
-                        if (isAdded && activity != null) {
-                            var visibleName = ""
-                            if (!accountInfo?.visibleName?.name.isNullOrBlank()) {
-                                visibleName += accountInfo?.visibleName?.name
-
-                                if (!accountInfo?.visibleName?.surname.isNullOrBlank()) {
-                                    visibleName += " ${accountInfo?.visibleName?.surname}"
-                                }
-                            }
-                            if (visibleName.isBlank()) {
-                                binding.visibleNameTextView.text = accountInfo?.nickname
-                            } else {
-                                binding.visibleNameTextView.text = visibleName
-                            }
-                            binding.usernameTextView.text = accountInfo?.nickname
-                            if (accountInfo?.about != null && accountInfo.about.isNotEmpty()) {
-                                binding.descriptionTextView.text = accountInfo.about
-                                binding.descriptionTextView.visibility = View.VISIBLE
-                            }
-
-                            retrieveMedia(accountInfo?.nickname ?: "", "avatar")
-                            retrieveMedia(accountInfo?.nickname ?: "", "banner")
-                        }
-                    } else {
-                        Log.e(TAG, "Failed to retrieve account info: ${response.errorBody()?.string()}")
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.failed_to_retrieve_account_info),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<AccountInfoPublic>, t: Throwable) {
-                    Log.e(TAG, "Failed to retrieve account info", t)
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.failed_to_retrieve_account_info),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
+            retrieveAndShowAccountInfo(nickname!!)
         } else {
-            retrieveAndShowAccountInfo(tokenManager.getToken())
+            Log.d(TAG, "Nickname: ${nicknameSharedPref.getString("nickname", "")}")
+            retrieveAndShowAccountInfo(nicknameSharedPref.getString("nickname", "")!!)
         }
 
         val editProfileSheetVM: EditProfileSheetVM by activityViewModels()
         editProfileSheetVM.accountInfoUpdated.observe(viewLifecycleOwner) { isUpdated ->
             if (isUpdated) {
-                retrieveAndShowAccountInfo(tokenManager.getToken())
+                retrieveAndShowAccountInfo(nicknameSharedPref.getString("nickname", "")!!)
                 editProfileSheetVM.accountInfoUpdated.value = false
             }
         }
@@ -154,27 +112,15 @@ class AccountFragment : Fragment() {
         return binding.root
     }
 
-    private fun retrieveAndShowAccountInfo(token: String?) {
-        if (token == null) {
-            Log.e(TAG, "Token is null")
-            tokenManager.clearToken()
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.failed_to_retrieve_account_info),
-                Toast.LENGTH_SHORT
-            ).show()
-            startActivity(Intent(requireContext(), LoginActivity::class.java))
-            requireActivity().finishAffinity()
-        }
-
+    private fun retrieveAndShowAccountInfo(nickname: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.accountContent.visibility = View.GONE
 
-        val call = accountApi.getPrivateAccountInfo(token)
-        call.enqueue(object : Callback<AccountInfoPrivate> {
+        val call = accountApi.getPublicAccountInfo(nickname)
+        call.enqueue(object : Callback<AccountInfoPublic> {
             override fun onResponse(
-                call: Call<AccountInfoPrivate>,
-                response: Response<AccountInfoPrivate>
+                call: Call<AccountInfoPublic>,
+                response: Response<AccountInfoPublic>
             ) {
                 if (response.isSuccessful) {
                     val accountInfo = response.body()
@@ -200,6 +146,14 @@ class AccountFragment : Fragment() {
                             binding.descriptionTextView.visibility = View.VISIBLE
                         }
 
+                        if (accountInfo?.lastTracks != null) {
+                            val yandexLastTrack = accountInfo.lastTracks.yandexTrack
+
+                            binding.trackNameTextView.text = yandexLastTrack.title
+                            binding.artistNameTextView.text = yandexLastTrack.artist
+                            binding.trackImageView.load(yandexLastTrack.img)
+                        }
+
                         val accountIdSharedPref =
                             requireContext().getSharedPreferences("accountId", 0)
                         if (accountInfo?.accountId == accountIdSharedPref.getString(
@@ -218,8 +172,24 @@ class AccountFragment : Fragment() {
                             binding.editProfileButton.visibility = View.GONE
                         }
 
-                        retrieveMedia(accountInfo?.nickname ?: "", "avatar")
-                        retrieveMedia(accountInfo?.nickname ?: "", "banner")
+                        if (accountInfo?.avatar != null) {
+                            Log.d(TAG, "Avatar: ${accountInfo.avatar}")
+                            binding.profilePfp.load("https://$SERVER_URL/account/info/media/avatar?id=${accountInfo.avatar}")
+                        }
+                        if (accountInfo?.banner != null) {
+                            Log.d(TAG, "Banner: ${accountInfo.banner}")
+                            binding.profileBanner.load("https://$SERVER_URL/account/info/media/banner?id=${accountInfo.banner}")
+                        }
+
+                        val transition = Fade()
+                        transition.duration = 200
+                        transition.addTarget(binding.accountContent)
+                        TransitionManager.beginDelayedTransition(binding.root, transition)
+
+                        binding.progressBar.visibility = View.GONE
+                        binding.accountContent.visibility = View.VISIBLE
+
+                        retrieveMediaCallsCompleted = 0
                     }
                 } else {
                     Log.e(TAG, "Failed to retrieve account info: ${response.errorBody()?.string()}")
@@ -231,68 +201,13 @@ class AccountFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<AccountInfoPrivate>, t: Throwable) {
+            override fun onFailure(call: Call<AccountInfoPublic>, t: Throwable) {
                 Log.e(TAG, "Failed to retrieve account info", t)
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.failed_to_retrieve_account_info),
                     Toast.LENGTH_SHORT
                 ).show()
-            }
-        })
-    }
-
-    private fun retrieveMedia(nickname: String, type: String) {
-        if (nickname.isEmpty() || type.isEmpty()) {
-            return
-        }
-
-        if (type == "avatar") {
-            binding.profilePfp.load("https://melomap.fun/account/info/media/avatar?nickname=$nickname")
-        } else {
-            binding.profileBanner.load("https://melomap.fun/account/info/media/banner?nickname=$nickname")
-        }
-
-        retrieveMediaCallsCompleted++
-        if (retrieveMediaCallsCompleted == 2) {
-            retrieveMediaCallsCompleted = 0
-            val yandexTokenSharedPref = requireContext().getSharedPreferences("yandexToken", Context.MODE_PRIVATE)
-            if (yandexTokenSharedPref.getString("yandexToken", null) != null) {
-                Log.d(TAG, "Retrieving last track")
-                retrieveLastTrack(tokenManager.getToken()!!, yandexTokenSharedPref.getString("yandexToken", null)!!)
-            }
-        }
-    }
-
-    private fun retrieveLastTrack(rythmapToken: String, yandexToken: String) {
-        val yandexApi = ServiceGenerator.createService(YandexApi::class.java)
-        val call = yandexApi.getAndSaveCurrent(rythmapToken, yandexToken)
-        call.enqueue(object : Callback<YandexTrack> {
-            override fun onResponse(call: Call<YandexTrack>, response: Response<YandexTrack>) {
-                if (response.isSuccessful) {
-                    val body = response.body()
-
-                    if (body != null) {
-                        Log.d(TAG, "Last track: $body")
-
-                        binding.trackNameTextView.text = body.title
-                        binding.artistNameTextView.text = body.artist
-
-                        binding.trackImageView.load(body.img)
-
-                        val transition = Fade()
-                        transition.duration = 200
-                        transition.addTarget(binding.accountContent)
-                        TransitionManager.beginDelayedTransition(binding.root, transition)
-
-                        binding.progressBar.visibility = View.GONE
-                        binding.accountContent.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<YandexTrack>, t: Throwable) {
-
             }
         })
     }
