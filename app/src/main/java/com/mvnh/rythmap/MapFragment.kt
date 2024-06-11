@@ -247,28 +247,9 @@ class MapFragment : Fragment() {
         val textView = markerLayout.findViewById<TextView>(R.id.nicknameTextView)
         textView.text = body.nickname
 
-        val imageView = markerLayout.findViewById<ShapeableImageView>(R.id.profilePfp)
         if (body.avatar != null) {
-            val call = accountApi.getMedia("avatar", body.avatar)
-            call.enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: retrofit2.Response<ResponseBody>
-                ) {
-                    if (response.isSuccessful) {
-                        Log.d(TAG, "Retrieved avatar: ${response.body()}")
-                        val avatar = response.body()?.bytes()
-                        val avatarBitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar!!.size)
-                        imageView.setImageBitmap(avatarBitmap)
-                    } else {
-                        Log.e(TAG, "Failed to retrieve avatar: ${response.message()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Log.e(TAG, "Failed to retrieve avatar: ${t.message}")
-                }
-            })
+            val imageView = markerLayout.findViewById<ShapeableImageView>(R.id.profilePfp)
+            imageView.load("https://$SERVER_URL/account/info/media/avatar?id=${body.avatar}")
         }
 
         markerLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
