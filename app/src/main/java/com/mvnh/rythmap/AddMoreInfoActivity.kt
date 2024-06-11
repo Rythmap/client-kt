@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import coil.load
 import com.mvnh.rythmap.utils.SecretData.TAG
 import com.mvnh.rythmap.databinding.ActivityAddMoreInfoBinding
 import com.mvnh.rythmap.retrofit.ServiceGenerator
@@ -19,6 +20,7 @@ import com.mvnh.rythmap.retrofit.account.AccountApi
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPrivate
 import com.mvnh.rythmap.retrofit.account.entities.AccountUpdateInfo
 import com.mvnh.rythmap.retrofit.account.entities.AccountVisibleName
+import com.mvnh.rythmap.utils.SecretData.SERVER_URL
 import com.mvnh.rythmap.utils.TokenManager
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -181,40 +183,23 @@ class AddMoreInfoActivity : AppCompatActivity() {
                 response: Response<AccountInfoPrivate>
             ) {
                 if (response.isSuccessful) {
-                    val nickname = response.body()?.nickname ?: return
-
-                    val getMediaCall = accountApi.getMedia(nickname, type)
-                    getMediaCall.enqueue(object : Callback<ResponseBody> {
-                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                            if (response.isSuccessful) {
-                                val imageBytes = response.body()?.bytes()
-                                val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes?.size ?: 0)
-                                if (type == "avatar") {
-                                    binding.profilePfp.setImageBitmap(bitmap)
-                                } else {
-                                    binding.profileBanner.setImageBitmap(bitmap)
-                                }
-                            } else {
-                                Log.e(TAG, "Failed to retrieve media: ${response.errorBody()?.string()}")
-                                Toast.makeText(
-                                    this@AddMoreInfoActivity,
-                                    "Failed to retrieve media",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                    val accountInfo = response.body()
+                    if (accountInfo != null) {
+                        if (type == "avatar") {
+                            binding.profilePfp.load("https://$SERVER_URL/account/info/media/avatar?id=${accountInfo.avatar}")
+                        } else if (type == "banner") {
+                            binding.profileBanner.load("https://$SERVER_URL/account/info/media/banner?id=${accountInfo.banner}")
                         }
-
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            Log.e(TAG, "Failed to retrieve media", t)
-                            Toast.makeText(
-                                this@AddMoreInfoActivity,
-                                "Failed to retrieve media",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    })
+                    } else {
+                        Log.e(TAG, "Failed to retrieve account info")
+                        Toast.makeText(
+                            this@AddMoreInfoActivity,
+                            "Failed to retrieve account info",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 } else {
-                    Log.e(TAG, "Failed to retrieve account info: ${response.errorBody()?.string()}")
+                    Log.e(TAG, "Failed to retrieve account info: ${response.message()}")
                     Toast.makeText(
                         this@AddMoreInfoActivity,
                         "Failed to retrieve account info",

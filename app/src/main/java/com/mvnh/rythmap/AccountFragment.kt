@@ -140,9 +140,11 @@ class AccountFragment : Fragment() {
                         if (accountInfo?.lastTracks != null) {
                             val yandexLastTrack = accountInfo.lastTracks.yandexTrack
 
-                            binding.trackNameTextView.text = yandexLastTrack.title
-                            binding.artistNameTextView.text = yandexLastTrack.artist
-                            binding.trackImageView.load(yandexLastTrack.img)
+                            if (yandexLastTrack != null) {
+                                binding.trackNameTextView.text = yandexLastTrack.title
+                                binding.artistNameTextView.text = yandexLastTrack.artist
+                                binding.trackImageView.load(yandexLastTrack.img)
+                            }
                         }
 
                         val accountIdSharedPref =
