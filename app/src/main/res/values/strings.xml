@@ -13,6 +13,7 @@
     <string name="map">Map</string>
     <string name="account">Account</string>
     <string name="friends">Friends</string>
+    <string name="amount_of_friends">friends</string>
     <string name="add_more_info">Add more info</string>
     <string name="about_you">about you</string>
     <string name="name">Name</string>
@@ -49,6 +50,8 @@
     <string name="friend_requests">Friend requests</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
+    <string name="listen">Listen</string>
+    <string name="last_track">Last track</string>
 
     <string-array name="music_preferences">
         <item>Rap</item>

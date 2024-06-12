@@ -95,13 +95,21 @@ class AddMoreInfoActivity : AppCompatActivity() {
         binding.doneStageButton.setOnClickListener {
             updateAccountInfo(
                 AccountUpdateInfo(
-                    token = tokenManager.getToken(),
+                    token = tokenManager.getToken()!!,
                     visibleName = AccountVisibleName(
                         binding.nameEditText.text.toString(),
                         binding.surnameEditText.text.toString()
                     ),
-                    musicPreferences = binding.musicPreferencesDropdown.text.toString().split(", "),
-                    otherPreferences = binding.otherPreferencesDropdown.text.toString().split(", "),
+                    musicPreferences = if (binding.musicPreferencesDropdown.text.toString().isNotBlank()) {
+                        binding.musicPreferencesDropdown.text.toString().split(", ")
+                    } else {
+                        null
+                    },
+                    otherPreferences = if (binding.otherPreferencesDropdown.text.toString().isNotBlank()) {
+                        binding.otherPreferencesDropdown.text.toString().split(", ")
+                    } else {
+                        null
+                    },
                     about = binding.aboutEditText.text.toString()
                 )
             )

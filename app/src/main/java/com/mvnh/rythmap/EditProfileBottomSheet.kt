@@ -109,13 +109,21 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
             dialog?.dismiss()
 
             val accountUpdateInfo = AccountUpdateInfo(
-                tokenManager.getToken(),
+                tokenManager.getToken()!!,
                 AccountVisibleName(
                     binding.nameEditText.text.toString(),
                     binding.surnameEditText.text.toString()
                 ),
-                binding.musicPreferencesDropdown.text.toString().split(", "),
-                binding.otherPreferencesDropdown.text.toString().split(", "),
+                if (binding.musicPreferencesDropdown.text.toString().isNotBlank()) {
+                    binding.musicPreferencesDropdown.text.toString().split(", ").filter { it.isNotBlank() }
+                } else {
+                    null
+                },
+                if (binding.otherPreferencesDropdown.text.toString().isNotBlank()) {
+                    binding.otherPreferencesDropdown.text.toString().split(", ").filter { it.isNotBlank() }
+                } else {
+                    null
+                },
                 binding.aboutEditText.text.toString()
             )
             editProfileSheetVM.updateAccountInfo(accountUpdateInfo)
@@ -132,6 +140,8 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
         val nameEditText = view.findViewById<EditText>(R.id.nameEditText)
         val surnameEditText = view.findViewById<EditText>(R.id.surnameEditText)
         val aboutEditText = view.findViewById<EditText>(R.id.aboutEditText)
+        val musicPrefs = view.findViewById<MultiAutoCompleteTextView>(R.id.musicPreferencesDropdown)
+        val otherPrefs = view.findViewById<MultiAutoCompleteTextView>(R.id.otherPreferencesDropdown)
 
         profilePfp.setImageBitmap(arguments?.getParcelable("avatar"))
         profileBanner.setImageBitmap(arguments?.getParcelable("banner"))
@@ -147,6 +157,8 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
             }
         }
         aboutEditText.setText(arguments?.getString("description"))
+        musicPrefs.setText(arguments?.getStringArrayList("musicPreferences")?.joinToString(", "))
+        otherPrefs.setText(arguments?.getStringArrayList("otherPreferences")?.joinToString(", "))
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

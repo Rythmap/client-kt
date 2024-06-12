@@ -115,7 +115,7 @@ class MapFragment : Fragment() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
 
-                if (isAdded && activity != null) {
+                if (isAdded) {
                     if (ContextCompat.checkSelfPermission(
                             requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED

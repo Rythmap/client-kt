@@ -184,15 +184,66 @@
         </com.google.android.material.imageview.ShapeableImageView>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/accountInterestsCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileInfoCardView">
+
+            <LinearLayout
+                android:id="@+id/accountInterestsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start"
+                android:orientation="vertical"
+                android:padding="25dp">
+
+                <TextView
+                    android:id="@+id/friendsAmountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="@string/friends"
+                    android:drawableStart="@drawable/group_icon"
+                    android:drawablePadding="5dp"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/musicPrefsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="@string/music_prefs"
+                    android:drawableStart="@drawable/music_note"
+                    android:drawablePadding="5dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/otherPrefsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="@string/other_prefs"
+                    android:drawableStart="@drawable/psychology"
+                    android:drawablePadding="5dp"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/lastTrackCardView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="25dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="15dp"
             app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="25dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileInfoCardView">
+            app:layout_constraintTop_toBottomOf="@+id/accountInterestsCardView">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/lastTrackContent"
@@ -206,7 +257,7 @@
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="25dp"
                     android:fontFamily="@font/inter_bold"
-                    android:text="Last track"
+                    android:text="@string/last_track"
                     android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -219,6 +270,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="25dp"
                     android:padding="3dp"
+                    android:src="@drawable/music_note"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/lastTrackLabel"
@@ -228,24 +280,28 @@
 
                 <TextView
                     android:id="@+id/trackNameTextView"
-                    android:layout_width="175dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="140dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
                     android:fontFamily="@font/inter_semibold"
                     android:text="Track name"
                     android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/trackImageView"
                     app:layout_constraintTop_toBottomOf="@+id/lastTrackLabel" />
 
                 <TextView
                     android:id="@+id/artistNameTextView"
-                    android:layout_width="175dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="25dp"
+                    android:layout_marginStart="140dp"
+                    android:layout_marginEnd="15dp"
                     android:fontFamily="@font/inter_regular"
                     android:text="Artist name"
                     android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/trackImageView"
                     app:layout_constraintTop_toBottomOf="@+id/trackNameTextView" />
 
@@ -257,7 +313,7 @@
                     android:layout_marginBottom="25dp"
                     android:backgroundTint="?attr/colorSecondaryContainer"
                     android:fontFamily="@font/inter_medium"
-                    android:text="asefd"
+                    android:text="@string/listen"
                     android:textColor="?attr/colorSecondary"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"

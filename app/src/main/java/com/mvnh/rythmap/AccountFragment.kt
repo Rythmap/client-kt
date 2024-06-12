@@ -95,6 +95,18 @@ class AccountFragment : Fragment() {
                     binding.profileBanner.drawable.toBitmap(bitmapWidth, bitmapHeight)
                 )
             }
+            if (binding.musicPrefsLabel.visibility == View.VISIBLE) {
+                bundle.putStringArrayList(
+                    "musicPreferences",
+                    ArrayList(binding.musicPrefsLabel.text.split(", "))
+                )
+            }
+            if (binding.otherPrefsLabel.visibility == View.VISIBLE) {
+                bundle.putStringArrayList(
+                    "otherPreferences",
+                    ArrayList(binding.otherPrefsLabel.text.split(", "))
+                )
+            }
             editProfileBottomSheet.arguments = bundle
 
             editProfileBottomSheet.show(parentFragmentManager, "editProfileBottomSheet")
@@ -118,6 +130,15 @@ class AccountFragment : Fragment() {
                     Log.d(TAG, "Account info: $accountInfo")
 
                     if (isAdded && activity != null) {
+                        if (accountInfo?.avatar != null) {
+                            Log.d(TAG, "Avatar: ${accountInfo.avatar}")
+                            binding.profilePfp.load("https://$SERVER_URL/account/info/media/avatar?id=${accountInfo.avatar}")
+                        }
+                        if (accountInfo?.banner != null) {
+                            Log.d(TAG, "Banner: ${accountInfo.banner}")
+                            binding.profileBanner.load("https://$SERVER_URL/account/info/media/banner?id=${accountInfo.banner}")
+                        }
+
                         var visibleName = ""
                         if (!accountInfo?.visibleName?.name.isNullOrBlank()) {
                             visibleName += accountInfo?.visibleName?.name
@@ -131,20 +152,44 @@ class AccountFragment : Fragment() {
                         } else {
                             binding.visibleNameTextView.text = visibleName
                         }
+
                         binding.usernameTextView.text = accountInfo?.nickname
+
                         if (accountInfo?.about != null && accountInfo.about.isNotEmpty()) {
                             binding.descriptionTextView.text = accountInfo.about
                             binding.descriptionTextView.visibility = View.VISIBLE
                         }
 
-                        if (accountInfo?.lastTracks != null) {
-                            val yandexLastTrack = accountInfo.lastTracks.yandexTrack
+                        if (accountInfo?.friends != null) {
+                            binding.friendsAmountTextView.text = "${accountInfo.friends.size.toString()} ${getString(R.string.amount_of_friends)}"
+                        } else {
+                            binding.friendsAmountTextView.visibility = View.GONE
+                        }
+                        if (accountInfo?.musicPreferences != null) {
+                            binding.musicPrefsLabel.text = accountInfo.musicPreferences.joinToString()
+                        } else {
+                            binding.musicPrefsLabel.visibility = View.GONE
+                        }
+                        if (accountInfo?.otherPreferences != null) {
+                            binding.otherPrefsLabel.text = accountInfo.otherPreferences.joinToString()
+                        } else {
+                            binding.otherPrefsLabel.visibility = View.GONE
+                        }
+                        if (binding.friendsAmountTextView.visibility == View.GONE &&
+                            binding.musicPrefsLabel.visibility == View.GONE &&
+                            binding.otherPrefsLabel.visibility == View.GONE
+                        ) {
+                            binding.accountInterestsLayout.visibility = View.GONE
+                        }
 
-                            if (yandexLastTrack != null) {
-                                binding.trackNameTextView.text = yandexLastTrack.title
-                                binding.artistNameTextView.text = yandexLastTrack.artist
-                                binding.trackImageView.load(yandexLastTrack.img)
-                            }
+                        if (accountInfo?.lastTracks?.yandexTrack != null) {
+                            binding.trackNameTextView.text = accountInfo.lastTracks.yandexTrack.title
+                            binding.artistNameTextView.text = accountInfo.lastTracks.yandexTrack.artist
+                            binding.trackImageView.load(accountInfo.lastTracks.yandexTrack.img)
+                        } else {
+                            binding.trackNameTextView.text = "No track listened"
+                            binding.artistNameTextView.text = "Maybe listen to some music?"
+                            binding.listenButton.isEnabled = false
                         }
 
                         val accountIdSharedPref =
@@ -163,15 +208,6 @@ class AccountFragment : Fragment() {
                             binding.sendMessageButton.visibility = View.VISIBLE
 
                             binding.editProfileButton.visibility = View.GONE
-                        }
-
-                        if (accountInfo?.avatar != null) {
-                            Log.d(TAG, "Avatar: ${accountInfo.avatar}")
-                            binding.profilePfp.load("https://$SERVER_URL/account/info/media/avatar?id=${accountInfo.avatar}")
-                        }
-                        if (accountInfo?.banner != null) {
-                            Log.d(TAG, "Banner: ${accountInfo.banner}")
-                            binding.profileBanner.load("https://$SERVER_URL/account/info/media/banner?id=${accountInfo.banner}")
                         }
 
                         val transition = Fade()

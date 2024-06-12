@@ -13,6 +13,7 @@
     <string name="map">Карта</string>
     <string name="account">Аккаунт</string>
     <string name="friends">Друзья</string>
+    <string name="amount_of_friends">друзей</string>
     <string name="add_more_info">Добавьте больше информации</string>
     <string name="about_you">о себе</string>
     <string name="name">Имя</string>
@@ -49,6 +50,8 @@
     <string name="friend_requests">Запросы в друзья</string>
     <string name="accept">Принять</string>
     <string name="decline">Отклонить</string>
+    <string name="listen">Слушать</string>
+    <string name="last_track">Последний трек</string>
 
     <string-array name="music_preferences">
         <item>Рэп</item>
