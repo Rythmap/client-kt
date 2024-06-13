@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.location.Location
 import android.os.Bundle
@@ -12,8 +13,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import coil.load
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -30,6 +33,7 @@ import com.mvnh.rythmap.retrofit.account.AccountApi
 import com.mvnh.rythmap.retrofit.account.entities.AccountInfoPublic
 import com.mvnh.rythmap.retrofit.map.MapWSResponse
 import com.mvnh.rythmap.retrofit.yandex.YandexApi
+import com.mvnh.rythmap.retrofit.yandex.entities.YandexTrack
 import com.mvnh.rythmap.utils.SecretData
 import com.mvnh.rythmap.utils.SecretData.SERVER_URL
 import com.mvnh.rythmap.utils.SecretData.TAG
@@ -37,6 +41,7 @@ import com.mvnh.rythmap.utils.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.ResponseBody
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.maplibre.android.MapLibre
@@ -110,7 +115,8 @@ class MapFragment : Fragment() {
 
         val client = OkHttpClient.Builder().readTimeout(0, TimeUnit.SECONDS).build()
         val request = Request.Builder().url("wss://${SecretData.SERVER_URL}/map").build()
-        val scheduledExecutor = Executors.newSingleThreadScheduledExecutor()
+        val locationScheduledExecutor = Executors.newSingleThreadScheduledExecutor()
+        val yandexTrackScheduledExecutor = Executors.newSingleThreadScheduledExecutor()
         val webSocketListener = object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
@@ -120,17 +126,17 @@ class MapFragment : Fragment() {
                             requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED
                     ) {
-                        scheduledExecutor.scheduleWithFixedDelay({
+                        locationScheduledExecutor.scheduleWithFixedDelay({
                             getUserLocation().addOnCompleteListener { task ->
                                 if (task.isSuccessful && task.result != null) {
                                     val location = task.result
 
                                     val nicknameSharedPref =
-                                        requireContext().getSharedPreferences(
+                                        context?.getSharedPreferences(
                                             "nickname",
                                             Context.MODE_PRIVATE
                                         )
-                                    val nickname = nicknameSharedPref.getString("nickname", null)
+                                    val nickname = nicknameSharedPref?.getString("nickname", null)
                                     if (nickname != null) {
                                         val message =
                                             "{\"nickname\": \"${nickname}\", \"location\": {\"lat\": ${location.latitude}, \"lng\": ${location.longitude}}, \"status\": \"online\", \"token\": \"${tokenManager.getToken()}\"}"
@@ -142,6 +148,33 @@ class MapFragment : Fragment() {
                                 }
                             }
                         }, 0, 15, TimeUnit.SECONDS)
+
+                        yandexTrackScheduledExecutor.scheduleWithFixedDelay({
+                            val yandexTokenSharedPref = context?.getSharedPreferences(
+                                "yandexToken",
+                                Context.MODE_PRIVATE
+                            )
+                            val yandexToken = yandexTokenSharedPref?.getString("yandexToken", null)
+                            if (yandexToken != null) {
+                                val call = yandexApi.getAndSaveCurrent(tokenManager.getToken()!!, yandexToken)
+                                call.enqueue(object : Callback<YandexTrack> {
+                                    override fun onResponse(
+                                        call: Call<YandexTrack>,
+                                        response: retrofit2.Response<YandexTrack>
+                                    ) {
+                                        if (response.isSuccessful) {
+                                            Log.d(TAG, "Yandex track: ${response.body()}")
+                                        } else {
+                                            Log.e(TAG, "Failed to get Yandex track: ${response.message()}")
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<YandexTrack>, t: Throwable) {
+                                        Log.e(TAG, "Failed to get Yandex track: ${t.message}")
+                                    }
+                                })
+                            }
+                        }, 0, 15, TimeUnit.SECONDS)
                     } else {
                         requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
                     }
@@ -151,7 +184,6 @@ class MapFragment : Fragment() {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
 
-                if (isAdded && activity != null)
                     activity?.runOnUiThread {
                         mapView.getMapAsync { map ->
                             map.setStyle(styleUrl) { style ->
@@ -177,8 +209,12 @@ class MapFragment : Fragment() {
                                         ) {
                                             if (response.isSuccessful) {
                                                 val accountInfo = response.body()
-                                                if (accountInfo != null) {
-                                                    style.addImage(
+                                                if (accountInfo != null && isAdded) {
+                                                    mapView.addOnDidFinishLoadingStyleListener {
+
+                                                    }
+
+                                                    style.addImageAsync(
                                                         nickname,
                                                         createMarkerBitmap(accountInfo)
                                                     )
@@ -190,6 +226,19 @@ class MapFragment : Fragment() {
                                                         )
                                                     ).withIconImage(nickname).withIconSize(0.75f)
                                                     val symbol = symbolManager.create(symbolOptions)
+
+                                                    symbolManager.addClickListener {
+                                                        val bundle = Bundle()
+                                                        bundle.putString("nickname", nickname)
+
+                                                        val sheet = LastTrackBottomSheet()
+                                                        sheet.arguments = bundle
+
+                                                        sheet.show(parentFragmentManager, "lastTrackBottomSheet")
+
+                                                        true
+                                                    }
+
                                                     symbolManager.update(symbol)
                                                 }
                                             } else {
@@ -219,13 +268,13 @@ class MapFragment : Fragment() {
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
                 Log.e(TAG, "WebSocket failed: ${t.message}")
-                scheduledExecutor.shutdown()
+                locationScheduledExecutor.shutdown()
             }
 
             override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
                 Log.d(TAG, "WebSocket closed: $code, $reason")
-                scheduledExecutor.shutdown()
+                locationScheduledExecutor.shutdown()
             }
         }
         val webSocket = client.newWebSocket(request, webSocketListener)
@@ -237,15 +286,13 @@ class MapFragment : Fragment() {
         Log.d(TAG, "Body: $body")
 
         val markerLayout =
-            LayoutInflater.from(requireContext()).inflate(R.layout.default_marker, null)
+            LayoutInflater.from(context).inflate(R.layout.default_marker, null)
 
         val textView = markerLayout.findViewById<TextView>(R.id.nicknameTextView)
         textView.text = body.nickname
 
-        if (body.avatar != null) {
-            val imageView = markerLayout.findViewById<ShapeableImageView>(R.id.profilePfp)
-            imageView.load("https://$SERVER_URL/account/info/media/avatar?id=${body.avatar}")
-        }
+        val imageView = markerLayout.findViewById<ShapeableImageView>(R.id.profilePfp)
+        imageView.load("https://${SERVER_URL}/account/info/media/avatar?id=${body.avatar}") // does not work for some reason. coil is very fast and the image is not loaded yet
 
         markerLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val bitmap = Bitmap.createBitmap(

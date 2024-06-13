@@ -41,17 +41,35 @@
     <string name="save_changes">Save changes</string>
     <string name="messenger">Messenger</string>
     <string name="search">Search</string>
+    <string name="cancel_friend_request">Cancel friend request</string>
+    <string name="remove_friend">Remove friend</string>
+    <string name="cancel_friend_request_message">Are you sure you want to cancel friend request?</string>
+    <string name="remove_friend_message">Are you sure you want to remove friend?</string>
     <string name="friend_request_sent">Friend request sent</string>
     <string name="friend_request_cancelled">Friend request cancelled</string>
     <string name="friend_request_accepted">Friend request accepted</string>
     <string name="friend_request_declined">Friend request declined</string>
     <string name="friend_removed">Friend removed</string>
     <string name="failed_to_send_friend_request">Failed to send friend request</string>
+    <string name="failed_to_cancel_friend_request">Failed to cancel friend request</string>
+    <string name="failed_to_accept_friend_request">Failed to accept friend request</string>
+    <string name="failed_to_decline_friend_request">Failed to decline friend request</string>
+    <string name="failed_to_remove_friend">Failed to remove friend</string>
     <string name="friend_requests">Friend requests</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
-    <string name="listen">Listen</string>
+    <string name="listen">Listen</string>s
     <string name="last_track">Last track</string>
+    <string name="no_track_listened">No track listened</string>
+    <string name="maybe_listen_to_some_music">Maybe listen to some music?</string>
+    <string name="you_re_friends">In friends</string>
+    <string name="pending">Pending</string>
+    <string name="actions">Actions</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="profile">Profile</string>
+    <string name="listens_to">listens to</string>
+    <string name="failed_to_get_account_info">Failed to get account info</string>
 
     <string-array name="music_preferences">
         <item>Rap</item>

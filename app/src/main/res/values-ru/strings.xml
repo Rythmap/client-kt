@@ -41,17 +41,35 @@
     <string name="save_changes">Сохранить изменения</string>
     <string name="messenger">Мессенджер</string>
     <string name="search">Поиск</string>
+    <string name="cancel_friend_request">Отменить запрос в друзья</string>
+    <string name="remove_friend">Удалить друга</string>
+    <string name="cancel_friend_request_message">Вы уверены, что хотите отменить запрос в друзья?</string>
+    <string name="remove_friend_message">Вы уверены, что хотите удалить друга?</string>
     <string name="friend_request_sent">Запрос в друзья отправлен</string>
     <string name="friend_request_cancelled">Запрос в друзья отменен</string>
     <string name="friend_request_accepted">Запрос в друзья принят</string>
     <string name="friend_request_declined">Запрос в друзья отклонен</string>
     <string name="friend_removed">Друг удален</string>
     <string name="failed_to_send_friend_request">Не удалось отправить запрос в друзья</string>
+    <string name="failed_to_cancel_friend_request">Не удалось отменить запрос в друзья</string>
+    <string name="failed_to_accept_friend_request">Не удалось принять запрос в друзья</string>
+    <string name="failed_to_decline_friend_request">Не удалось отклонить запрос в друзья</string>
+    <string name="failed_to_remove_friend">Не удалось удалить друга</string>
     <string name="friend_requests">Запросы в друзья</string>
     <string name="accept">Принять</string>
     <string name="decline">Отклонить</string>
     <string name="listen">Слушать</string>
     <string name="last_track">Последний трек</string>
+    <string name="no_track_listened">Нет прослушанного трека</string>
+    <string name="maybe_listen_to_some_music">Может, послушаете музыку?</string>
+    <string name="you_re_friends">Вы друзья</string>
+    <string name="pending">Запрошено</string>
+    <string name="actions">Действия</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="profile">Профиль</string>
+    <string name="listens_to">слушает</string>
+    <string name="failed_to_get_account_info">Не удалось получить информацию о профиле</string>
 
     <string-array name="music_preferences">
         <item>Рэп</item>

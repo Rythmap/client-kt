@@ -68,22 +68,22 @@ interface AccountApi {
 
     @POST("friends/request/accept")
     fun acceptFriendRequest(
-        @Body request: AnyFriendRequest
+        @Body request: AnyOtherFriendRequest
     ): Call<ResponseBody>
 
     @POST("friends/request/decline")
     fun declineFriendRequest(
-        @Body request: AnyFriendRequest
+        @Body request: AnyOtherFriendRequest
     ): Call<ResponseBody>
 
     @POST("friends/request/cancel")
     fun cancelFriendRequest(
-        @Body request: AnyFriendRequest
+        @Body request: AnyOtherFriendRequest
     ): Call<ResponseBody>
 
     @POST("friends/remove")
     fun removeFriend(
-        @Body request: AnyFriendRequest
+        @Body request: AnyOtherFriendRequest
     ): Call<ResponseBody>
 
     @GET("friends/search")

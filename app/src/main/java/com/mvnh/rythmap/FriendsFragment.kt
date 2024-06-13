@@ -27,8 +27,6 @@ class FriendsFragment : Fragment() {
     private lateinit var tokenManager: TokenManager
     private lateinit var accountApi: AccountApi
 
-    private var retrieveFriendsCallsCompleted = 0
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,18 +43,16 @@ class FriendsFragment : Fragment() {
         retrieveAndShowFriends(tokenManager.getToken()!!)
 
         binding.searchEditText.addTextChangedListener {
-            searchFriends(it.toString())
+            if (!it.isNullOrBlank()) {
+                searchFriends(it.toString())
+            }
         }
 
         return binding.root
     }
 
-    private fun retrieveAndShowFriends(token: String): List<AccountInfoPublic> {
-        binding.friendsContent.visibility = View.GONE
-        binding.progressBar.visibility = View.VISIBLE
-
+    private fun retrieveAndShowFriends(token: String) {
         val friends = mutableListOf<AccountInfoPublic>()
-
         val call = accountApi.getPrivateAccountInfo(token)
         call.enqueue(object : Callback<AccountInfoPrivate> {
             override fun onResponse(
@@ -66,10 +62,15 @@ class FriendsFragment : Fragment() {
                 if (response.isSuccessful) {
                     val accountInfo = response.body()
                     Log.d(TAG, "Account info: $accountInfo")
+
                     if (accountInfo?.friends != null) {
-                        Log.d(TAG, "Friends: ${accountInfo.friends}")
-                        for (friend in accountInfo.friends) {
-                            friends.addAll(retrieveFriendInfo(friend, accountInfo.friends.size))
+                        val friendsList = accountInfo.friends.toMutableList()
+                        if (accountInfo.friendRequests != null) {
+                            friendsList += accountInfo.friendRequests
+                        }
+                        for (friend in friendsList) {
+                            val friendInfo = retrieveFriendInfo(friend, friendsList.size)
+                            friends.addAll(friendInfo)
                         }
                     }
                 } else {
@@ -84,7 +85,12 @@ class FriendsFragment : Fragment() {
             }
         })
 
-        return friends
+        activity?.runOnUiThread {
+            (binding.friendsRecyclerView.adapter as MessengerRecyclerAdapter).setFriends(
+                friends
+            )
+            Log.d(TAG, "RecyclerView updated with friends: $friends")
+        }
     }
 
     private fun retrieveFriendInfo(friend: String, friendsAmount: Int): List<AccountInfoPublic> {
@@ -127,24 +133,12 @@ class FriendsFragment : Fragment() {
                             )
                             Log.d(TAG, "RecyclerView updated with friends: $friends")
                         }
-
-                        retrieveFriendsCallsCompleted++
-                        if (retrieveFriendsCallsCompleted == friendsAmount) {
-                            binding.progressBar.visibility = View.GONE
-                            binding.friendsContent.visibility = View.VISIBLE
-                        }
                     }
                 }
             }
 
             override fun onFailure(call: Call<AccountInfoPublic>, t: Throwable) {
                 Log.d(TAG, "Failed to retrieve friend: ${t.message}")
-
-                retrieveFriendsCallsCompleted++
-                if (retrieveFriendsCallsCompleted == friendsAmount) {
-                    binding.progressBar.visibility = View.GONE
-                    binding.friendsContent.visibility = View.VISIBLE
-                }
             }
         })
 
@@ -163,7 +157,7 @@ class FriendsFragment : Fragment() {
                     Log.d(TAG, "Friends found: $friendsResponse")
 
                     val friends = mutableListOf<AccountInfoPublic>()
-                    friendsResponse?.forEach { (nickname, accountInfo) ->
+                    friendsResponse?.forEach { (_, accountInfo) ->
                         val friend = AccountInfoPublic(
                             accountId = accountInfo.accountId,
                             nickname = accountInfo.nickname,
@@ -190,13 +184,5 @@ class FriendsFragment : Fragment() {
                 Toast.makeText(context, "Failed to search friends", Toast.LENGTH_SHORT).show()
             }
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        retrieveAndShowFriends(tokenManager.getToken()!!)
-        binding.searchEditText.text?.clear()
-        binding.friendsContent.visibility = View.VISIBLE
-        binding.progressBar.visibility = View.GONE
     }
 }

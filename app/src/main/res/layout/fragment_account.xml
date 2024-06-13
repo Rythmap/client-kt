@@ -1,326 +1,346 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AccountFragment">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="gone"
+        android:layout_gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/accountContent"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/colorOnSurfaceInverse"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/profileBanner"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/accountContent"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"
-            android:src="?attr/colorSecondaryContainer"
+            android:layout_height="match_parent"
+            android:background="?attr/colorOnSurfaceInverse"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/profileInfoCardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-25dp"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="25dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileBanner">
+            <ImageView
+                android:id="@+id/profileBanner"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                android:src="?attr/colorSecondaryContainer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:id="@+id/accountInfoLayout"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/profileInfoCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="70dp"
-                android:gravity="center"
-                android:orientation="vertical"
+                android:layout_marginTop="-25dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="25dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/visibleNameTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_bold"
-                    android:gravity="center"
-                    android:text="Visible name"
-                    android:textSize="24dp" />
-
-                <TextView
-                    android:id="@+id/usernameTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_medium"
-                    android:gravity="center"
-                    android:text="username"
-                    android:textSize="16dp" />
-
-                <TextView
-                    android:id="@+id/descriptionTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_regular"
-                    android:gravity="center"
-                    android:paddingStart="25dp"
-                    android:paddingTop="10dp"
-                    android:paddingEnd="25dp"
-                    android:text="Description"
-                    android:textSize="16dp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tapForMoreLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="@string/tap_for_more_info"
-                    android:textColor="?attr/colorAccent" />
+                app:layout_constraintTop_toBottomOf="@+id/profileBanner">
 
                 <LinearLayout
-                    android:id="@+id/buttonsLayout"
+                    android:id="@+id/accountInfoLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="60dp"
+                    android:layout_marginTop="70dp"
                     android:gravity="center"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/accountInfoLayout">
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/visibleNameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:text="Visible name"
+                        android:textSize="24dp" />
+
+                    <TextView
+                        android:id="@+id/usernameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:gravity="center"
+                        android:text="username"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/descriptionTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_regular"
+                        android:gravity="center"
+                        android:paddingStart="25dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="25dp"
+                        android:text="Description"
+                        android:textSize="16dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tapForMoreLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="@string/tap_for_more_info"
+                        android:textColor="?attr/colorAccent" />
 
                     <LinearLayout
+                        android:id="@+id/buttonsLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="60dp"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/accountInfoLayout">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/addToFriendsButton"
+                                android:layout_width="150dp"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="@font/inter_medium"
+                                android:gravity="center"
+                                android:text="@string/add"
+                                android:textSize="16sp"
+                                app:cornerRadius="16dp" />
+
+                            <Button
+                                android:id="@+id/sendMessageButton"
+                                android:layout_width="150dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="10dp"
+                                android:backgroundTint="?attr/colorSecondaryContainer"
+                                android:fontFamily="@font/inter_medium"
+                                android:gravity="center"
+                                android:text="@string/message"
+                                android:textColor="?attr/colorSecondary"
+                                android:textSize="16sp"
+                                app:cornerRadius="16dp" />
+
+                        </LinearLayout>
 
                         <Button
-                            android:id="@+id/addToFriendsButton"
-                            android:layout_width="150dp"
+                            android:id="@+id/editProfileButton"
+                            android:layout_width="310dp"
                             android:layout_height="50dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginEnd="5dp"
+                            android:backgroundTint="?attr/colorSurfaceContainerHighest"
                             android:fontFamily="@font/inter_medium"
                             android:gravity="center"
-                            android:text="@string/add"
-                            android:textSize="16dp"
-                            app:cornerRadius="16dp" />
-
-                        <Button
-                            android:id="@+id/sendMessageButton"
-                            android:layout_width="150dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="10dp"
-                            android:backgroundTint="?attr/colorSecondaryContainer"
-                            android:fontFamily="@font/inter_medium"
-                            android:gravity="center"
-                            android:text="@string/message"
-                            android:textColor="?attr/colorSecondary"
-                            android:textSize="16dp"
+                            android:text="@string/edit"
+                            android:textColor="?attr/colorSurfaceInverse"
+                            android:textSize="16sp"
                             app:cornerRadius="16dp" />
 
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/editProfileButton"
-                        android:layout_width="310dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:backgroundTint="?attr/colorSurfaceContainerHighest"
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profilePfp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="-60dp"
+                android:background="?attr/colorOnSurfaceInverse"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/photo_camera_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/profileInfoCardView"
+                app:layout_constraintTop_toTopOf="@+id/profileInfoCardView"
+                app:shapeAppearanceOverlay="@style/roundedImageView25"
+                app:strokeColor="?attr/colorPrimary"
+                app:strokeWidth="8dp">
+
+            </com.google.android.material.imageview.ShapeableImageView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/accountInterestsCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileInfoCardView"
+                app:cardCornerRadius="25dp">
+
+                <LinearLayout
+                    android:id="@+id/accountInterestsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start"
+                    android:orientation="vertical"
+                    android:padding="25dp">
+
+                    <TextView
+                        android:id="@+id/friendsAmountTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:fontFamily="@font/inter_medium"
-                        android:gravity="center"
-                        android:text="@string/edit"
-                        android:textColor="?attr/colorSurfaceInverse"
-                        android:textSize="16dp"
-                        app:cornerRadius="16dp" />
+                        android:text="@string/friends"
+                        android:drawableStart="@drawable/group_icon"
+                        android:drawablePadding="5dp"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/musicPrefsLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="@string/music_prefs"
+                        android:drawableStart="@drawable/music_note"
+                        android:drawablePadding="5dp"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/otherPrefsLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="@string/other_prefs"
+                        android:drawableStart="@drawable/psychology"
+                        android:drawablePadding="5dp"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profilePfp"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="-60dp"
-            android:background="?attr/colorOnSurfaceInverse"
-            android:padding="4dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/photo_camera_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/profileInfoCardView"
-            app:layout_constraintTop_toTopOf="@+id/profileInfoCardView"
-            app:shapeAppearanceOverlay="@style/roundedImageView25"
-            app:strokeColor="?attr/colorPrimary"
-            app:strokeWidth="8dp">
-
-        </com.google.android.material.imageview.ShapeableImageView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/accountInterestsCardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileInfoCardView">
-
-            <LinearLayout
-                android:id="@+id/accountInterestsLayout"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/lastTrackCardView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="start"
-                android:orientation="vertical"
-                android:padding="25dp">
+                android:layout_height="0dp"
+                android:layout_marginTop="15dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/accountInterestsCardView">
 
-                <TextView
-                    android:id="@+id/friendsAmountTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="@string/friends"
-                    android:drawableStart="@drawable/group_icon"
-                    android:drawablePadding="5dp"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:id="@+id/musicPrefsLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="@string/music_prefs"
-                    android:drawableStart="@drawable/music_note"
-                    android:drawablePadding="5dp"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/otherPrefsLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="@string/other_prefs"
-                    android:drawableStart="@drawable/psychology"
-                    android:drawablePadding="5dp"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/lastTrackCardView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="15dp"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="25dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/accountInterestsCardView">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lastTrackContent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/lastTrackLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginTop="25dp"
-                    android:fontFamily="@font/inter_bold"
-                    android:text="@string/last_track"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/trackImageView"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="25dp"
-                    android:padding="3dp"
-                    android:src="@drawable/music_note"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lastTrackLabel"
-                    app:shapeAppearanceOverlay="@style/roundedImageView25"
-                    app:strokeColor="?attr/colorPrimary"
-                    app:strokeWidth="6dp" />
-
-                <TextView
-                    android:id="@+id/trackNameTextView"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/lastTrackContent"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="140dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:fontFamily="@font/inter_semibold"
-                    android:text="Track name"
-                    android:textSize="20sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/trackImageView"
-                    app:layout_constraintTop_toBottomOf="@+id/lastTrackLabel" />
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/artistNameTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="140dp"
-                    android:layout_marginEnd="15dp"
-                    android:fontFamily="@font/inter_regular"
-                    android:text="Artist name"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/trackImageView"
-                    app:layout_constraintTop_toBottomOf="@+id/trackNameTextView" />
+                    <TextView
+                        android:id="@+id/nicknameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="25dp"
+                        android:fontFamily="@font/inter_bold"
+                        android:text="@string/last_track"
+                        android:textSize="20sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/listenButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="25dp"
-                    android:layout_marginBottom="25dp"
-                    android:backgroundTint="?attr/colorSecondaryContainer"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="@string/listen"
-                    android:textColor="?attr/colorSecondary"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/trackImageView"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="25dp"
+                        android:padding="3dp"
+                        android:src="@drawable/music_note"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/nicknameTextView"
+                        app:shapeAppearanceOverlay="@style/roundedImageView25"
+                        app:strokeColor="?attr/colorPrimary"
+                        app:strokeWidth="6dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/trackNameTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="140dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="15dp"
+                        android:fontFamily="@font/inter_semibold"
+                        android:text="Track name"
+                        android:textSize="20sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/trackImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/nicknameTextView" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/artistNameTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="140dp"
+                        android:layout_marginEnd="15dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text="Artist name"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/trackImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/trackNameTextView" />
+
+                    <Button
+                        android:id="@+id/listenButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginBottom="25dp"
+                        android:backgroundTint="?attr/colorSecondaryContainer"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="@string/listen"
+                        android:textColor="?attr/colorSecondary"
+                        android:textSize="16sp"
+                        app:cornerRadius="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                        android:id="@+id/trackDurationLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:fontFamily="@font/inter_regular"
+                        android:text="dura:tion"
+                        app:layout_constraintStart_toEndOf="@+id/trackImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/artistNameTextView" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</FrameLayout>

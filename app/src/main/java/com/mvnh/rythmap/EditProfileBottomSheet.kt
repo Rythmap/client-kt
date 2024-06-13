@@ -70,7 +70,7 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
                 } else {
                     Log.e(TAG, "Failed to pick media")
                     Toast.makeText(
-                        requireContext(),
+                        context,
                         getString(R.string.failed_to_pick_media),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -83,7 +83,7 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
                 } else {
                     Log.e(TAG, "Failed to pick media")
                     Toast.makeText(
-                        requireContext(),
+                        context,
                         getString(R.string.failed_to_pick_media),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -135,30 +135,22 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val profilePfp = view.findViewById<ShapeableImageView>(R.id.profilePfp)
-        val profileBanner = view.findViewById<ShapeableImageView>(R.id.profileBanner)
-        val nameEditText = view.findViewById<EditText>(R.id.nameEditText)
-        val surnameEditText = view.findViewById<EditText>(R.id.surnameEditText)
-        val aboutEditText = view.findViewById<EditText>(R.id.aboutEditText)
-        val musicPrefs = view.findViewById<MultiAutoCompleteTextView>(R.id.musicPreferencesDropdown)
-        val otherPrefs = view.findViewById<MultiAutoCompleteTextView>(R.id.otherPreferencesDropdown)
-
-        profilePfp.setImageBitmap(arguments?.getParcelable("avatar"))
-        profileBanner.setImageBitmap(arguments?.getParcelable("banner"))
+        binding.profilePfp.setImageBitmap(arguments?.getParcelable("avatar"))
+        binding.profileBanner.setImageBitmap(arguments?.getParcelable("banner"))
 
         val visibleName = arguments?.getString("visibleName")?.split(" ")
         Log.d(TAG, "Visible name: $visibleName")
         if (visibleName != null) {
             if (visibleName[0] != arguments?.getString("username")) {
-                nameEditText?.setText(visibleName[0])
+                binding.nameEditText.setText(visibleName[0])
             }
             if (visibleName.size > 1) {
-                surnameEditText?.setText(visibleName[1])
+                binding.surnameEditText.setText(visibleName[1])
             }
         }
-        aboutEditText.setText(arguments?.getString("description"))
-        musicPrefs.setText(arguments?.getStringArrayList("musicPreferences")?.joinToString(", "))
-        otherPrefs.setText(arguments?.getStringArrayList("otherPreferences")?.joinToString(", "))
+        binding.aboutEditText.setText(arguments?.getString("description"))
+        binding.musicPreferencesDropdown.setText(arguments?.getStringArrayList("musicPreferences")?.joinToString(", "))
+        binding.otherPreferencesDropdown.setText(arguments?.getStringArrayList("otherPreferences")?.joinToString(", "))
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -179,7 +171,7 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
     private fun uploadMedia(token: String?, type: String, uri: Uri) {
         token ?: return
 
-        val uriInputStream = requireContext().contentResolver.openInputStream(uri)
+        val uriInputStream = context?.contentResolver?.openInputStream(uri)
         val uriBytes = IOUtils.toByteArray(uriInputStream)
         val requestBody = uriBytes.toRequestBody("image/jpeg".toMediaTypeOrNull(), 0, uriBytes.size)
         val filePart = MultipartBody.Part.createFormData("file", "file", requestBody)
@@ -198,7 +190,7 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
                 } else {
                     Log.e(TAG, "Failed to upload media: ${response.errorBody()?.string()}")
                     Toast.makeText(
-                        requireContext(),
+                        context,
                         getString(R.string.failed_to_upload_media),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -208,7 +200,7 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Log.e(TAG, "Failed to upload media", t)
                 Toast.makeText(
-                    requireContext(),
+                    context,
                     getString(R.string.failed_to_upload_media),
                     Toast.LENGTH_SHORT
                 ).show()

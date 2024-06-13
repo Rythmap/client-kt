@@ -1,6 +1,6 @@
 package com.mvnh.rythmap.retrofit.account.entities
 
-data class AnyFriendRequest(
+data class AnyOtherFriendRequest(
     val toNickname: String,
-    val fromNickname: String
+    val fromToken: String
 )

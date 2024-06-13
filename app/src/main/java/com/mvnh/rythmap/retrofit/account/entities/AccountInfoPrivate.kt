@@ -15,5 +15,6 @@ data class AccountInfoPrivate(
     @SerializedName("other_preferences") val otherPreferences: List<String>? = null,
     @SerializedName("last_tracks") val lastTracks: AccountLastTracks? = null,
     val friends: List<String>? = null,
+    @SerializedName("friend_requests") val friendRequests: List<String>? = null,
     @SerializedName("created_at") val createdAt: String,
 )
