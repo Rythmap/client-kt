@@ -67,9 +67,12 @@
     <string name="actions">Actions</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ok">OK</string>
     <string name="profile">Profile</string>
     <string name="listens_to">listens to</string>
     <string name="failed_to_get_account_info">Failed to get account info</string>
+    <string name="password_reqs">Password requirements</string>
+    <string name="password_reqs_message"><![CDATA[Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character: !%*?&]]></string>
 
     <string-array name="music_preferences">
         <item>Rap</item>

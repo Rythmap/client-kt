@@ -86,7 +86,6 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordFieldLayout"
             style="?attr/textInputFilledStyle"
-            app:startIconContentDescription="Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character: !%*?&amp;"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"

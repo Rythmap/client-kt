@@ -67,9 +67,13 @@
     <string name="actions">Действия</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="ok">ОК</string>
     <string name="profile">Профиль</string>
     <string name="listens_to">слушает</string>
     <string name="failed_to_get_account_info">Не удалось получить информацию о профиле</string>
+    <string name="password_reqs">Требования к паролю</string>
+    <string name="password_reqs_message"><![CDATA[Пароль должен содержать не менее 8 символов, минимум 1 заглавную и строчную букву, цифру и спецсимвол: !%*?&]]></string>
+
 
     <string-array name="music_preferences">
         <item>Рэп</item>

@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mvnh.rythmap.utils.SecretData.TAG
 import com.mvnh.rythmap.databinding.ActivityLoginBinding
 import com.mvnh.rythmap.retrofit.ServiceGenerator
@@ -37,6 +38,16 @@ class LoginActivity : AppCompatActivity() {
                 password = binding.passwordField.text.toString(),
                 email = binding.emailField.text.toString(),
             )
+        }
+
+        binding.passwordFieldLayout.setStartIconOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.password_reqs)
+                .setMessage(R.string.password_reqs_message)
+                .setPositiveButton(R.string.ok) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
 
         binding.registerButton.setOnClickListener {
