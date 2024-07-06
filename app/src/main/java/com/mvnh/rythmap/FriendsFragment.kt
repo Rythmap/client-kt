@@ -69,7 +69,7 @@ class FriendsFragment : Fragment() {
                             friendsList += accountInfo.friendRequests
                         }
                         for (friend in friendsList) {
-                            val friendInfo = retrieveFriendInfo(friend, friendsList.size)
+                            val friendInfo = retrieveFriendInfo(friend)
                             friends.addAll(friendInfo)
                         }
                     }
@@ -93,7 +93,7 @@ class FriendsFragment : Fragment() {
         }
     }
 
-    private fun retrieveFriendInfo(friend: String, friendsAmount: Int): List<AccountInfoPublic> {
+    private fun retrieveFriendInfo(friend: String): List<AccountInfoPublic> {
         val friends = mutableListOf<AccountInfoPublic>()
 
         val call = accountApi.getPublicAccountInfo(friend)
