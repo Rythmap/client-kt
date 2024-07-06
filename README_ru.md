@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="pics/emoji.png" alt="Rythmap Logo" width="200"/>
+<img src="https://github.com/Rythmap/.github/blob/main/profile/emoji.png" alt="Rythmap Logo" width="200"/>
 
 ### Клиент проекта Rythmap
 
-<strong>[English](README.md)</strong>
+<strong>[English](https://github.com/Rythmap/client-kt/blob/main/README.md)</strong>
 
 </div>
 
