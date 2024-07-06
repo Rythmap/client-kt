@@ -22,7 +22,7 @@
 </details>
 
 ## 😎 `Features`
-* Ability to view people nearby and their music preferences on a map
+* Ability to view people nearby and their currently playing music on a map
 * Musical services linking
 * Friends system
 
